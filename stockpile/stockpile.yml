@@ -29,6 +29,12 @@
     - common
     - undercloud
 
+- hosts: all
+  remote_user: root
+  become: true
+  roles:
+    - collect_packages
+
 - hosts: browbeat
   remote_user: "{{ browbeat_user }}"
   roles:

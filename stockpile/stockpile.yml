@@ -20,14 +20,7 @@
     #- glance
     #- undercloud
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 - hosts: stockpile
-=======
-=======
->>>>>>> d320513... Collect repos
-- hosts: browbeat
->>>>>>> 63f6561... Collect repos
   remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

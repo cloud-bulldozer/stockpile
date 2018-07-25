@@ -1,0 +1,5 @@
+---
+
+- name: get the rpm package facts
+  package_facts:
+    manager: "auto"

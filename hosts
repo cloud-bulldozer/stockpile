@@ -1,0 +1,7 @@
+---
+
+[all]
+# List of hosts which we want to gather information from
+
+[stockpile]
+# The host stockpile is running from

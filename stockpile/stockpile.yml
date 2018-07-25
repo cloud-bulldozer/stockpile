@@ -19,7 +19,7 @@
     #- glance
     #- undercloud
 
-- hosts: browbeat
+- hosts: stockpile
   remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

@@ -1,33 +1,23 @@
 ---
-- hosts: compute
+- hosts: all
   remote_user: "{{ host_remote_user }}"
   become: true
   roles:
     - common
-    - compute
-
-- hosts: controller
-  remote_user: "{{ host_remote_user }}"
-  become: true
-  roles:
-    - common
-    - nova
-    - neutron
-    - keystone
-    - ceilometer
-    - gnocchi
-    - cinder
-    - heat
-    - mysql
-    - rabbitmq
-    - glance
-
-- hosts: undercloud
-  remote_user: "{{ local_remote_user }}"
-  become: true
-  roles:
-    - common
-    - undercloud
+    - packages
+    #- compute
+    #- common
+    #- nova
+    #- neutron
+    #- keystone
+    #- ceilometer
+    #- gnocchi
+    #- cinder
+    #- heat
+    #- mysql
+    #- rabbitmq
+    #- glance
+    #- undercloud
 
 - hosts: all
   remote_user: root
@@ -36,6 +26,6 @@
     - collect_packages
 
 - hosts: browbeat
-  remote_user: "{{ browbeat_user }}"
+  remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

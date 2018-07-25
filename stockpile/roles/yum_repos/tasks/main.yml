@@ -1,0 +1,12 @@
+---
+
+# Works always only for Red Hat distros, and for fedora <22 because dnf is
+# is used over yum in fedora >=22 as its installled by default
+- name: Collect yum repos
+  yum:
+    list: repos
+  register: yum_repos
+  when: ansible_os_family == 'RedHat' and
+        not
+        ( ansible_distribution == 'Fedora'
+        and ansible_distribution_major_version|int >= 22 )

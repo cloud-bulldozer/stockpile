@@ -5,6 +5,7 @@
   roles:
     - common
     - packages
+    - yum_repos
     #- compute
     #- common
     #- nova
@@ -19,13 +20,14 @@
     #- glance
     #- undercloud
 
-- hosts: all
-  remote_user: root
-  become: true
-  roles:
-    - collect_packages
-
+<<<<<<< HEAD
+<<<<<<< HEAD
+- hosts: stockpile
+=======
+=======
+>>>>>>> d320513... Collect repos
 - hosts: browbeat
+>>>>>>> 63f6561... Collect repos
   remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

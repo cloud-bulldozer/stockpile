@@ -1,0 +1,16 @@
+---
+
+# Capture the data you are interested in
+- name: "crontab shell"
+  shell: "cat /etc/crontab | grep SHELL | awk -F = '{print $2}'"
+  register: crontab_shell
+
+- name: "crontab mailto"
+  shell: "cat /etc/crontab | grep MAILTO | awk -F = '{print $2}'"
+  register: crontab_mailto
+
+- name: "Store the crontab config"
+  set_fact:
+    example2:
+      - crontab_shell : "{{ crontab_shell.stdout }}"
+      - crontab_mailto: "{{ crontab_mailto.stdout }}"

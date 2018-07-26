@@ -1,0 +1,16 @@
+---
+
+- name: "my example name"
+  shell: "ethtool -i {{item}} | grep driver | awk -F: '{print $2}'"
+  with_items: "{{ ansible_interfaces }}"
+  register: interface_drivers
+
+- set_fact:
+    __dict: |
+        {% for item in  interface_drivers.results %}
+        {{item.item}}: "{{item.stdout}}"
+        {% endfor %}
+
+- name: "Store example data"
+  set_fact:
+    example: "{{__dict|from_yaml}}"

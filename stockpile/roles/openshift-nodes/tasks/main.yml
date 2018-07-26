@@ -1,0 +1,69 @@
+---
+- name: check if the docker is installed
+  shell: which docker
+  register: docker_installed
+
+- name: ensure that docker is running
+  service:
+    name: docker
+    state: started
+
+- name: docker status
+  command: systemctl status docker
+  register: docker_status
+  failed_when: docker_status.rc != 0
+    
+- block:
+    - name: get the docker version
+      shell: docker --version | cut -d "," -f1 | cut -d ' ' -f3
+      register: docker_version_installed
+  
+    - name: get the docker storage driver info
+      shell: docker info | grep -w "Storage Driver" | cut -d ':' -f2
+      register: docker_storage_driver_info
+
+    - name: set docker info as facts
+      set_fact:
+        openshift_docker:
+          - version: "{{ docker_version_installed.stdout }}"
+          - storage_driver: "{{ docker_storage_driver_info.stdout }}"
+  when: docker_installed.rc == 0
+
+- name: determine virtualization technology
+  shell: dmidecode -s system-product-name
+  register: virtualization_info
+
+- name: get atomic openshift tests rpm version
+  shell: rpm -q --qf "%{VERSION}" atomic-openshift-tests
+  register: ocp_tests_version
+
+- name: get atomic openshift pod version
+  shell: rpm -q --qf "%{VERSION}" atomic-openshift-pod
+  register: ocp_pod_version
+
+- name: get atomic openshift node version
+  shell: rpm -q --qf "%{VERSION}" atomic-openshift-node
+  register: ocp_node_version
+
+- name: get atomic openshift docker registry version
+  shell: rpm -q --qf "%{VERSION}" atomic-openshift-dockerregistry
+  register: ocp_dockerregistry_version
+
+- name: get tuned profiles version
+  shell: rpm -q --qf "%{VERSION}" tuned-profiles-atomic
+  register: tuned_profiles_atomic
+
+- name: kernel version
+  shell: uname -r
+  register: kernel_info
+
+- name: set collected info as facts
+  set_fact:
+    stockpile_openshift_nodes:
+      virtualization: "{{ virtualization_info.stdout }}"
+      tests_version: "{{ ocp_tests_version.stdout }}"
+      pod_version: "{{ ocp_pod_version.stdout }}"
+      node_version: "{{ ocp_node_version.stdout }}"
+      dockerregistry_version: "{{ ocp_dockerregistry_version.stdout }}"
+      tuned_profiles_version: "{{ tuned_profiles_atomic.stdout }}"
+      kernel_version: "{{ kernel_info.stdout }}"

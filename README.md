@@ -67,6 +67,7 @@ Example output of the above Example role:
                     " bridge"
                 ]
             }
+            ]
     }
 }
 ```

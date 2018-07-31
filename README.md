@@ -68,7 +68,8 @@ Example output of the above Example role:
                 ]
             }
     }
-}```
+}
+```
 
 We are not worried about the structure this currently creates. That is for Scribe to break down.
 

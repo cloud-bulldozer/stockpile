@@ -5,6 +5,8 @@
   roles:
     - common
     - packages
+    #- example
+    #- example2
     #- compute
     #- common
     #- nova
@@ -20,6 +22,7 @@
     #- undercloud
 
 - hosts: stockpile
+  gather_facts: false
   remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

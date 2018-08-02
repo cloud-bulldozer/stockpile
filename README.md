@@ -11,66 +11,87 @@ In order to create a new set of information to stockpile, create the Ansible rol
 
 For this work, we just need to create the tasks, so in *stockpile/roles/example/tasks/main.yaml*
 
+### Scenario 1: You want to capture all the interface details. So, you might consider the below.
+
 ```ansible
 ---
 
+# Capture the data you are interested in
 - name: "my example name"
   shell: "ethtool -i {{item}} | grep driver | awk -F: '{print $2}'"
   with_items: "{{ ansible_interfaces }}"
   register: interface_drivers
 
+# Easy way to create a YAML that we will translate into a dict
+
+- set_fact:
+    __dict: |
+        {% for item in  interface_drivers.results %}
+        {{item.item}}: "{{item.stdout}}"
+        {% endfor %}
+
+# Store the data using the role_name as the key.
+
 - name: "Store example data"
   set_fact:
-    "interface" : "{{ item.item }}"
-    "driver" : "{{ item.stdout }}"
-  with_items: "{{ interface_drivers.results }}"
+    example: "{{__dict|from_yaml}}"
+
 ```
 
 Once Stockpile completes, it will create * *metadata/machine_facts.json* *
 
 Example output of the above Example role:
 ```json
-{
-    "interface_drivers": {
-        "changed": true,
-            "msg": "All items completed",
-            "results": [
-            {
-                "_ansible_ignore_errors": null,
-                "_ansible_item_result": true,
-                "_ansible_no_log": false,
-                "_ansible_parsed": true,
-                "changed": true,
-                "cmd": "ethtool -i docker0 | grep driver | awk -F: '{print $2}'",
-                "delta": "0:00:00.006694",
-                "end": "2018-07-27 15:26:56.870726",
-                "failed": false,
-                "invocation": {
-                    "module_args": {
-                        "_raw_params": "ethtool -i docker0 | grep driver | awk -F: '{print $2}'",
-                        "_uses_shell": true,
-                        "chdir": null,
-                        "creates": null,
-                        "executable": null,
-                        "removes": null,
-                        "stdin": null,
-                        "warn": true
-                    }
-                },
-                "item": "docker0",
-                "rc": 0,
-                "start": "2018-07-27 15:26:56.864032",
-                "stderr": "",
-                "stderr_lines": [],
-                "stdout": " bridge",
-                "stdout_lines": [
-                    " bridge"
-                ]
-            }
-            ]
+    "example": {
+        "docker0": " bridge",
+        "enp6s0": " sky2",
+        "enp7s0": " sky2",
+        "lo": "",
+        "tun0": " tun",
+        "veth2d88dbd": " veth",
+        "virbr0": " bridge",
+        "virbr0-nic": " tun"
     }
-}
 ```
+
+### Scenario 2: You want to capture details about a configuration file:
+
+For this work, we just need to create the tasks, so in *stockpile/roles/example2/tasks/main.yaml*
+
+```ansible
+---
+
+# Capture the data you are interested in
+- name: "crontab shell"
+  shell: "cat /etc/crontab | grep SHELL | awk -F = '{print $2}'"
+  register: crontab_shell
+
+- name: "crontab mailto"
+  shell: "cat /etc/crontab | grep MAILTO | awk -F = '{print $2}'"
+  register: crontab_mailto
+
+- name: "Store the crontab config"
+  set_fact:
+    example2:
+      - crontab_shell : "{{ crontab_shell.stdout }}"
+      - crontab_mailto: "{{ crontab_mailto.stdout }}"
+
+```
+
+Example output
+
+```json
+    "example2": [
+        {
+            "crontab_shell": "/bin/bash"
+        },
+        {
+            "crontab_mailto": "root"
+        }
+    ]
+
+```
+
 
 We are not worried about the structure this currently creates. That is for Scribe to break down.
 

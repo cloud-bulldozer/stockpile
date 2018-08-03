@@ -1,0 +1,56 @@
+---
+- name: check if oc client is installed
+  shell: which oc
+  register: oc_installed
+
+- name: check if kubeconfig exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.kube/config"
+  register: kubeconfig
+
+- name: fail if oc client or kubeconfig doesn't exist
+  fail:
+    msg: Cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config", please check.
+  when: ( oc_installed.rc != 0 or kubeconfig.stat.exists == False )
+
+- block:
+    - name: get pods in all namespaces
+      shell: oc get pods --all-namespaces -o json
+      register: ocp_running_pods
+
+    - name: get openshift app node count
+      shell:  oc get nodes -l node-role.kubernetes.io/compute=true | grep -w "Ready" | wc -l
+      register: ocp_compute_count
+
+    - name: openshift masters and etcd count assuming that masters are etcd are co-located
+      shell: oc get nodes -l node-role.kubernetes.io/master=true | grep -w "Ready" | wc -l
+      register: ocp_master_count
+
+    - name: ocp cluster network
+      shell: oc get clusternetwork -o json
+      register: ocp_network_plugin
+    
+    - name: oc client version
+      shell: oc version | grep -w oc | cut -d ' ' -f2
+      register: oc_client_version
+
+    - name: oc server version
+      shell: oc version | grep -w openshift | cut -d ' ' -f2
+      register: oc_server_version
+
+    - name: openshift user
+      shell: oc whoami
+      register: ocp_user
+
+    - name: set the collected info as facts
+      set_fact:
+        stockpile_openshift_cluster_topology:
+          running_pods_count: "{{ ocp_running_pods.stdout | from_json | json_query('items[].status.phase') | length }}"
+          compute_count: "{{ ocp_compute_count.stdout }}"
+          master_count: "{{ ocp_master_count.stdout }}"
+          etcd_count: "{{ ocp_master_count.stdout }}"
+          cluster_network_plugin: "{{ ocp_network_plugin.stdout | from_json | json_query('items[].pluginName') }}"
+          client_version: "{{ oc_client_version.stdout }}"
+          server_version: "{{ oc_server_version.stdout }}"
+          user: "{{ ocp_user.stdout }}"
+  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )

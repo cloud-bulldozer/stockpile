@@ -1,9 +1,4 @@
 ---
-
-# ensuring pip is installed
-- include_role:
-    name: install-pip
-
 # Checking if dmide is present
 - name: Verify Dmidecode
   package:
@@ -11,12 +6,12 @@
     state: present
 
 - name: Run script
-  script: dmide_to_json.py
+  script: dmidecode_dict.py
   become: true
   register: dmide_run
 
 - set_fact:
-    dmidecode_json: "{{ dmide_run.stdout }}"
+    stockpile_dmidecode: "{{ dmide_run.stdout }}"
 #
 # - debug:
 #     var: dmidecode_json

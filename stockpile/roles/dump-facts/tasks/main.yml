@@ -1,6 +1,3 @@
 ---
 - name: Dump all vars
   template: src=dump_facts.j2 dest={{ stockpile_path }}/metadata/machine_facts.json
-
-- name: Generate metadata jsons
-  shell : python {{ stockpile_path }}/bin/metadata.py {{ stockpile_path }}/metadata

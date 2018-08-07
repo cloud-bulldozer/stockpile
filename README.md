@@ -13,7 +13,7 @@ For this work, we just need to create the tasks, so in *stockpile/roles/example/
 
 ### Scenario 1: You want to capture all the interface details. So, you might consider the below.
 
-```ansible
+```yaml
 ---
 
 # Capture the data you are interested in
@@ -58,7 +58,7 @@ Example output of the above Example role:
 
 For this work, we just need to create the tasks, so in *stockpile/roles/example2/tasks/main.yaml*
 
-```ansible
+```yaml
 ---
 
 # Capture the data you are interested in

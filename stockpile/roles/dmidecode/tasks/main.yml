@@ -1,0 +1,17 @@
+---
+# Checking if dmide is present
+- name: Verify Dmidecode
+  package:
+    name: dmidecode
+    state: present
+
+- name: Run script
+  script: dmidecode_dict.py
+  become: true
+  register: dmide_run
+
+- set_fact:
+    stockpile_dmidecode: "{{ dmide_run.stdout }}"
+#
+# - debug:
+#     var: dmidecode_json

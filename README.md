@@ -11,6 +11,61 @@ In order to create a new set of information to stockpile, create the Ansible rol
 
 For this work, we just need to create the tasks, so in *stockpile/roles/example/tasks/main.yaml*
 
+## Norms to follow while adding roles
+
+Please make sure that you follow the below mentioned norms:
+
+1. Never use set_fact more than once in your role(per playbook)
+2. Use register to set your vars and not set_fact
+3. Use set_fact at the end to build the dictionary according to hierarchy
+required
+4. Prefix the dictionary with stockpile_
+5. Don't try to build the dictionary using the vars directly, lets say if you
+run a shell command to set var1, while building dictionary use var1.stdout
+
+Please look at the example below:
+
+```yaml
+
+- name: run the shell command
+  shell: whoami
+  register: var1
+## Rest of the role where you collect info and use register to set vars
+
+- name: set the collected info as facts
+  set_fact:
+    stockpile_role_hierarchy:
+      var_1: "{{ var1.stdout }}"
+  when: ( role_installed.rc == 0 )
+
+```
+
+For the role hierarchy, best example would be to look at openshift roles:
+
+Following is how the role openshift-cluster-topology collects facts:
+
+```yaml
+- name: set the collected info as facts
+  set_fact:
+    stockpile_openshift_cluster_topology:
+      running_pods_count: "{{ ocp_running_pods.stdout | from_json | json_query('items[].status.phase') | length }}"
+      compute_count: "{{ ocp_compute_count.stdout }}"
+      master_count: "{{ ocp_master_count.stdout }}"
+      etcd_count: "{{ ocp_master_count.stdout }}"
+      cluster_network_plugin: "{{ ocp_network_plugin.stdout | from_json | json_query('items[].pluginName') }}"
+      client_version: "{{ oc_client_version.stdout }}"
+      server_version: "{{ oc_server_version.stdout }}"
+      user: "{{ ocp_user.stdout }}"
+    when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )
+```
+
+By naming the var stockpile_openshift_cluster_topology, the variable is self
+explanatory about what it's collecting. Also if there's a new role that i added
+later for cluster performance, it's var can be named stockpile_openshift_cluster_perf
+
+A bad example would be naming var as stockpile_openshift_cluster. 
+
+
 ### Scenario 1: You want to capture all the interface details. So, you might consider the below.
 
 ```yaml
@@ -34,7 +89,7 @@ For this work, we just need to create the tasks, so in *stockpile/roles/example/
 
 - name: "Store example data"
   set_fact:
-    example: "{{__dict|from_yaml}}"
+    stockpile_example: "{{__dict|from_yaml}}"
 
 ```
 
@@ -42,7 +97,7 @@ Once Stockpile completes, it will create * *metadata/machine_facts.json* *
 
 Example output of the above Example role:
 ```json
-    "example": {
+    "stockpile_example": {
         "docker0": " bridge",
         "enp6s0": " sky2",
         "enp7s0": " sky2",
@@ -72,7 +127,7 @@ For this work, we just need to create the tasks, so in *stockpile/roles/example2
 
 - name: "Store the crontab config"
   set_fact:
-    example2:
+    stockpile_example2:
       - crontab_shell : "{{ crontab_shell.stdout }}"
       - crontab_mailto: "{{ crontab_mailto.stdout }}"
 
@@ -81,7 +136,7 @@ For this work, we just need to create the tasks, so in *stockpile/roles/example2
 Example output
 
 ```json
-    "example2": [
+    "stockpile_example2": [
         {
             "crontab_shell": "/bin/bash"
         },
@@ -94,4 +149,3 @@ Example output
 
 
 We are not worried about the structure this currently creates. That is for Scribe to break down.
-

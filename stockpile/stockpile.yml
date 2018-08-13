@@ -5,6 +5,7 @@
   roles:
     - common
     - packages
+    - ceph
     #- example
     #- example2
     #- compute

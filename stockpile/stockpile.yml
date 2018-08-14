@@ -5,6 +5,7 @@
   roles:
     - common
     - packages
+    - dmidecode
     #- example
     #- example2
     #- compute

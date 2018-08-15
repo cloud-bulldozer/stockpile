@@ -40,6 +40,8 @@ Please look at the example below:
 
 ```
 
+Please read below on how the 'hierarchy' should be named:
+
 For the role hierarchy, best example would be to look at openshift roles:
 
 Following is how the role openshift-cluster-topology collects facts:
@@ -60,10 +62,11 @@ Following is how the role openshift-cluster-topology collects facts:
 ```
 
 By naming the var stockpile_openshift_cluster_topology, the variable is self
-explanatory about what it's collecting. Also if there's a new role that i added
+explanatory about what it's collecting. Also if there's a new role that needs to be added
 later for cluster performance, it's var can be named stockpile_openshift_cluster_perf
 
-A bad example would be naming var as stockpile_openshift_cluster. 
+A bad example would be naming var as stockpile_openshift_cluster unless you're confident that 
+everything related to openshift_cluster will be collected as part of the role openshift_cluster
 
 
 ### Scenario 1: You want to capture all the interface details. So, you might consider the below.

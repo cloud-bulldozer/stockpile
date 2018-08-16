@@ -6,6 +6,7 @@
     - common
     - packages
     - dmidecode
+    - yum_repos
     #- example
     #- example2
     #- compute

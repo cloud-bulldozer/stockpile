@@ -8,6 +8,8 @@
     - dmidecode
     - yum_repos
     - ceph
+    - openshift-cluster-topology
+    - openshift-nodes
     #- example
     #- example2
     #- compute

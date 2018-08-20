@@ -11,47 +11,47 @@
 - name: ceph version
   shell: "ceph -f json version"
   register: ceph_version
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph osd tree 
   shell: "ceph -f json osd tree"
   register: ceph_osd_tree
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph -s 
   shell: "ceph -f json status"
   register: ceph_status
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph osd pool ls detail 
   shell: "ceph -f json osd pool ls detail"
   register: ceph_osd_pool_ls_detail
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph fs ls
   shell: "ceph -f json fs ls"
   register: ceph_fs_ls
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph mon_status
   shell: "ceph mon_status"
   register: ceph_mon_status
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph mds stat
   shell: "ceph -f json mds stat"
   register: ceph_mds_stat
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph osd crush rule dump
   shell: "ceph -f json osd crush rule dump"
   register: ceph_osd_crush_rule_dump
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 - name: ceph osd crush dump
   shell: "ceph -f json osd crush dump"
   register: ceph_osd_crush_dump
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 # this task injects all the variables with a ST_ prefix 
 # so that machine_facts.json displays them properly
@@ -67,6 +67,6 @@
       mds_stat: "{{ceph_mds_stat.stdout | from_json}}"
       osd_crush_rule_dump: "{{ceph_osd_crush_rule_dump.stdout | from_json}}"
       osd_crush_dump: "{{ceph_osd_crush_dump.stdout | from_json}}"
-  when: ceph_present.rc == sts_ok
+  when: ceph_present.rc == 0
 
 

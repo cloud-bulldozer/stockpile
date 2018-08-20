@@ -6,6 +6,7 @@
     - common
     - packages
     - dmidecode
+    - ceph
     #- example
     #- example2
     #- compute

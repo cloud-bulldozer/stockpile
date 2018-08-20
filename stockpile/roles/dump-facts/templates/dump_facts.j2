@@ -1,7 +1,0 @@
-[
-{% if groups['all'] is defined %}
- {% for host in groups['all'] %}
-  {{hostvars[host]| to_nice_json}}
- {% endfor %}
-{% endif %}
-]

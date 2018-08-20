@@ -7,9 +7,9 @@ Stockpile uses Red Hat Ansible to collect system information. To add to the Stoc
 ## How do I add to the existing Ansible roles?
 Let's say for example you wanted to capture all the interface drivers on the SUT -- not an useful since this fact already exists. However, for the sake of the example, bare with me.
 
-In order to create a new set of information to stockpile, create the Ansible role directory, *stockpile/roles/example*
+In order to create a new set of information to stockpile, create the Ansible role directory, *roles/example*
 
-For this work, we just need to create the tasks, so in *stockpile/roles/example/tasks/main.yaml*
+For this work, we just need to create the tasks, so in *roles/example/tasks/main.yaml*
 
 ## Norms to follow while adding roles
 
@@ -111,7 +111,7 @@ Example output of the above Example role:
 
 ### Scenario 2: You want to capture details about a configuration file:
 
-For this work, we just need to create the tasks, so in *stockpile/roles/example2/tasks/main.yaml*
+For this work, we just need to create the tasks, so in *roles/example2/tasks/main.yaml*
 
 ```yaml
 ---
@@ -149,3 +149,20 @@ Example output
 
 
 We are not worried about the structure this currently creates. That is for Scribe to break down.
+
+
+### Importing stockpile roles to ansible galaxy
+
+The roles can be imported to Ansible Galaxy using the script like:
+```
+$ ./import_roles.sh <github_token> <github_user> <github_repo> [galaxy_server_url]
+```
+The galaxy_server_url is set to https://galaxy.ansible.com by default if not defined by the user.
+
+
+The stockpile roles can be pulled/installed from Ansible Galaxy using:
+```
+$ mazer -s https://galaxy.ansible.com --roles-path=<roles_path> install <github_user> <github_repo>
+```
+If roles_path is not defined, then the roles will be installed under the default ANSIBLE_ROLES_PATH
+which is /etc/ansible/roles or the path specified in the ansible.cfg.

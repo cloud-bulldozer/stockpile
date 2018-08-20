@@ -57,7 +57,7 @@
 # so that machine_facts.json displays them properly
 
 - set_fact:
-    stockpile_ceph_hierarchy:
+    stockpile_ceph:
       version: "{{ceph_version.stdout | from_json}}"
       osd_tree: "{{ceph_osd_tree.stdout | from_json}}"
       status: "{{ceph_status.stdout | from_json}}"

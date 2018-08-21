@@ -5,7 +5,7 @@
 - name: Collect yum repos
   yum:
     list: repos
-  register: yum_repos
+  register: stockpile_yum_repos
   when: ansible_os_family == 'RedHat' and
         not
         ( ansible_distribution == 'Fedora' and

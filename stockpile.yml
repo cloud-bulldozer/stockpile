@@ -5,7 +5,9 @@
   roles:
     - common
     - packages
-    - dmidecode
+    #- dmidecode
+    - yum_repos
+    - lsblk
     #- example
     #- example2
     #- compute

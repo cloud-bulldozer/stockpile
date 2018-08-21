@@ -1,0 +1,10 @@
+---
+
+- name: Check if lsblk is present
+  command: lsblk --j
+  register: lsblk   
+ 
+- set_fact:
+    stockpile_lsblk: "{{ lsblk.results }}"
+  when: lsblk.rc == 0
+

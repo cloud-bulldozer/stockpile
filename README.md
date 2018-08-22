@@ -5,7 +5,7 @@ Tool to gather information from systems using Ansible.
 Stockpile uses Red Hat Ansible to collect system information. To add to the Stockpile, the user must create a new Anbile role that defines what they are looking to capture.
 
 ## How do I add to the existing Ansible roles?
-Let's say for example you wanted to capture all the interface drivers on the SUT -- not an useful since this fact already exists. However, for the sake of the example, bare with me.
+Let's say for example you wanted to capture all the interface drivers on the SUT -- not particularly useful since this fact already exists. However, for the sake of the example, bear with me.
 
 In order to create a new set of information to stockpile, create the Ansible role directory, *roles/example*
 

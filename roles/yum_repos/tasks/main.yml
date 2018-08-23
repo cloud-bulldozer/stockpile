@@ -10,3 +10,6 @@
         not
         ( ansible_distribution == 'Fedora' and
         ansible_distribution_major_version|int >= 22 )
+
+- set_fact:
+    stockpile_yum_repos: "{{ yum_repos.results }}"

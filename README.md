@@ -40,6 +40,7 @@ Please look at the example below:
 ```
 
 For the role hierarchy, a good example would be to look at openshift roles:
+Please read below on how 'hierarchy' should be named:
 
 Following is how the role *openshift-cluster-topology* collects facts:
 
@@ -58,11 +59,12 @@ Following is how the role *openshift-cluster-topology* collects facts:
     when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )
 ```
 
-By naming the var "stockpile_openshift_cluster_topology", the variable is self
-explanatory about what it's collecting. Also if there's a new role that is added
-later for cluster performance, its var can be named "stockpile_openshift_cluster_perf".
+By naming the var stockpile_openshift_cluster_topology, the variable is self
+explanatory about what it's collecting. Also if there's a new role that needs to be added
+later for cluster performance, it's var can be named stockpile_openshift_cluster_perf
 
-A bad example would be naming the var as "stockpile_openshift_cluster". 
+A bad example would be naming var as stockpile_openshift_cluster unless you're confident that
+everything related to openshift_cluster will be collected as part of the role openshift_cluster.
 
 
 ### Scenario 1: You want to capture all the interface details. So, you might consider the below.

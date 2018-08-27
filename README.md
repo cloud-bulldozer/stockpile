@@ -5,21 +5,20 @@ Tool to gather information from systems using Ansible.
 Stockpile uses Red Hat Ansible to collect system information. To add to the Stockpile, the user must create a new Anbile role that defines what they are looking to capture.
 
 ## How do I add to the existing Ansible roles?
-Let's say for example you wanted to capture all the interface drivers on the SUT -- not an useful since this fact already exists. However, for the sake of the example, bare with me.
+Let's say for example you wanted to capture all the interface drivers on the SUT -- not particularly useful since this fact already exists. However, for the sake of the example, bear with me.
 
 In order to create a new set of information to stockpile, create the Ansible role directory, *roles/example*
 
-For this work, we just need to create the tasks, so in *roles/example/tasks/main.yaml*
+For this work, we just need to create the tasks, so in *roles/example/tasks/main.yml* add the relevant tasks.
 
 ## Norms to follow while adding roles
 
 Please make sure that you follow the below mentioned norms:
 
-1. Never use set_fact more than once in your role(per playbook)
-2. Use register to set your vars and not set_fact
-3. Use set_fact at the end to build the dictionary according to hierarchy
-required
-4. Prefix the dictionary with stockpile_
+1. Never use set_fact more than once in your role(per playbook).
+2. Use register to set your vars and not set_fact.
+3. Use set_fact at the end to build the dictionary according to the required hierarchy.
+4. Prefix the dictionary with "stockpile_".
 5. Don't try to build the dictionary using the vars directly, lets say if you
 run a shell command to set var1, while building dictionary use var1.stdout
 
@@ -40,9 +39,9 @@ Please look at the example below:
 
 ```
 
-For the role hierarchy, best example would be to look at openshift roles:
+For the role hierarchy, a good example would be to look at openshift roles:
 
-Following is how the role openshift-cluster-topology collects facts:
+Following is how the role *openshift-cluster-topology* collects facts:
 
 ```yaml
 - name: set the collected info as facts
@@ -59,11 +58,11 @@ Following is how the role openshift-cluster-topology collects facts:
     when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )
 ```
 
-By naming the var stockpile_openshift_cluster_topology, the variable is self
-explanatory about what it's collecting. Also if there's a new role that i added
-later for cluster performance, it's var can be named stockpile_openshift_cluster_perf
+By naming the var "stockpile_openshift_cluster_topology", the variable is self
+explanatory about what it's collecting. Also if there's a new role that is added
+later for cluster performance, its var can be named "stockpile_openshift_cluster_perf".
 
-A bad example would be naming var as stockpile_openshift_cluster. 
+A bad example would be naming the var as "stockpile_openshift_cluster". 
 
 
 ### Scenario 1: You want to capture all the interface details. So, you might consider the below.

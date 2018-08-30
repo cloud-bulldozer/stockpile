@@ -2,15 +2,16 @@
 - name: check if oc client is installed
   shell: which oc
   register: oc_installed
+  ignore_errors: yes
 
 - name: check if kubeconfig exists
   stat:
     path: "{{ ansible_env.HOME }}/.kube/config"
   register: kubeconfig
 
-- name: fail if oc client or kubeconfig doesn't exist
-  fail:
-    msg: Cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config", please check.
+- name: print debug msg if oc client or kubeconfig doesn't exist
+  debug:
+    msg: Skipping the ocp collection, cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config" or oc client is not installed, please check.
   when: ( oc_installed.rc != 0 or kubeconfig.stat.exists == False )
 
 - block:
@@ -38,9 +39,45 @@
       shell: oc version | grep -w openshift | cut -d ' ' -f2
       register: oc_server_version
 
+    - name: kubernetes server version
+      shell: oc version | grep -w kubernetes | cut -d ' ' -f2 | uniq
+      register: kube_server_version
+
     - name: openshift user
       shell: oc whoami
       register: ocp_user
+
+    - name: infra pods
+      shell: for infra_node in $(oc get nodes -l node-role.kubernetes.io/infra=true | awk 'NR>1 {print $1}' ); do oc get pods --all-namespaces --field-selector spec.nodeName=$infra_node -o wide | awk 'NR>1 {print $2}'; done
+      register: ocp_infra_pods
+
+    - name: get the system pod names in crashloop state
+      shell: oc get pods -n kube-system -o wide | grep -v "Running" | awk 'NR>1 {print $1}'
+      register: ocp_failed_pods
+
+    - name: get the components status
+      shell: oc get cs -o json
+      register: ocp_components_status
+
+    - name: services
+      shell: oc get svc --all-namespaces -o json
+      register: ocp_svc
+
+    - name: services accounts
+      shell: oc get sa --all-namespaces -o json
+      register: ocp_sa
+
+    - name: security contxt constraints
+      shell: oc get scc --all-namespaces -o json
+      register: ocp_scc
+    
+    - name: persistent volumes
+      shell: oc get pv --all-namespaces -o json
+      register: ocp_pv
+
+    - name: persistent volume claims
+      shell: oc get pvc --all-namespaces -o json
+      register: ocp_pvc
 
     - name: set the collected info as facts
       set_fact:
@@ -53,4 +90,14 @@
           client_version: "{{ oc_client_version.stdout }}"
           server_version: "{{ oc_server_version.stdout }}"
           user: "{{ ocp_user.stdout }}"
+          infra_pods: "{{ ocp_infra_pods.stdout.split('\n') }}"
+          failed_system_pods: "{{ ocp_failed_pods.split('\n') }}"
+          components_status: "{{ ocp_components_status.stdout }}"
+          services: "{{ ocp_svc.stdout }}"
+          service_accounts: "{{ ocp_sa.stdout }}"
+          security_context_constraints: "{{ ocp_scc.stdout }}"
+          persistent_volumes: "{{ ocp_pv.stdout }}"
+          persistent_volume_claim: "{{ ocp_pvc.stdout }}"
+          kubernetes_server_version: "{{ kube_server_version }}"
+           
   when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )

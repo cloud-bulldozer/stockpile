@@ -3,11 +3,11 @@
   remote_user: "{{ host_remote_user }}"
   become: true
   roles:
-    - common
-    - packages
+    #- common
+    #- packages
     - dmidecode
     - yum_repos
-    - ceph
+    #- ceph
     #- example
     #- example2
     #- compute
@@ -24,8 +24,8 @@
     #- glance
     #- undercloud
 
-- hosts: stockpile
+- hosts: 127.0.0.1
+  connection: local
   gather_facts: false
-  remote_user: "{{ stockpile_user }}"
   roles:
     - dump-facts

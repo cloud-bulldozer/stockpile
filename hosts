@@ -1,5 +1,5 @@
 [all]
 # List of hosts which we want to gather information from
+perfshift01.perf.lab.eng.bos.redhat.com
+porthos.perf.lab.eng.rdu.redhat.com
 
-[stockpile]
-# The host stockpile is running from

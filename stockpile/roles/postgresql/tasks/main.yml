@@ -1,0 +1,47 @@
+---
+  # Collect PostgreSQL related configuration
+  - name: Detect the location for postgres configuration
+    shell:
+       find / -type f -name "postgresql.conf" | head -1
+    register: pgsql_config_file
+  - set_fact:
+          pgsql_config: "{{ postgresql_config_file.stdout_lines | first }}"
+  - name: Get max_connections
+    shell:
+       grep "max_connections = " "{{ pgsql_config }}" | cut -d ' ' -f 3
+    register: pgsql_max_connections
+    ignore_errors: true
+  - name: Get shared_buffers
+    shell:
+       grep "shared_buffers = " "{{ pgsql_config }}" | cut -d ' ' -f 3
+    register: pgsql_shared_buffers
+    ignore_errors: true
+  - name: Get work_mem
+    shell:
+       grep "work_mem = " "{{ pgsql_config }}" | tail -1 | cut -d ' ' -d 3
+    register: pgsql_work_mem
+    ignore_errors: true
+  - name: Fetch effective_io_concurrency
+    shell:
+       grep "effective_io_concurrency = " "{{ pgsql_config }}" | tail -1 | cut -d ' ' -f 3
+    register: pgsql_effective_io_concurrency
+    ignore_errors: true
+  - name: Fetch checkpoint_segments
+    shell:
+       grep "checkpoint_segments = " "{{ pgsql_config }}" | tail -1 | cut -d ' ' -f 3
+    register: pgsql_checkpoint_segments
+    ignore_errors: true
+  - name: Get checkpoint_completion_target
+    shell:
+       grep "checkpoint_completion_target = " "{{ pgsql_config }}" | tail -1 | cut -d ' ' -f 3
+    register: pgsql_checkpoint_completion_target
+    ignore_errors: true
+  - name: Store pgsql related facts
+    set_fact:
+      stockpile_satellite_pgsql:
+        pgsql_max_connections: {{ pgsql_max_connections.stdout }}
+        pgsql_shared_buffers: {{ pgsql_shared_buffers.stdout }}
+        pgsql_work_mem: {{ pgsql_work_mem.stdout }}
+        pgsql_effective_io_concurrency: {{ pgsql_effective_io_concurrency.stdout }}
+        pgsql_checkpoint_segments: {{ pgsql_checkpoint_segments.stdout }}
+        pgsql_checkpoint_completion_target: {{ pgsql_checkpoint_completion_target.stdout }}

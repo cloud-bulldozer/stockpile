@@ -5,8 +5,8 @@
     name: dmidecode
     state: present
 
-- name: Run script
-  script: dmidecode_dict.py
+- name: Run dmidecode
+  command: dmidecode --quiet
   become: true
   register: dmide_run
 

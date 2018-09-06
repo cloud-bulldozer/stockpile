@@ -79,6 +79,22 @@
       shell: oc get pvc --all-namespaces -o json
       register: ocp_pvc
 
+    - name: openshift compute node config
+      script: openshift_config_scraper.py node-config-compute
+      register: ocp_compute_configmap 
+
+    - name: openshift master node config
+      script: openshift_config_scraper.py node-config-master
+      register: ocp_master_configmap
+
+    - name: openshift web-console config
+      script: openshift_config_scraper.py webconsole-config
+      register: ocp_webconsole_configmap
+
+    - name: openshift infra node config
+      script: openshift_config_scraper.py node-config-infra
+      register: ocp_infra_configmap
+
     - name: set the collected info as facts
       set_fact:
         stockpile_openshift_cluster_topology:
@@ -99,5 +115,8 @@
           persistent_volumes: "{{ ocp_pv.stdout }}"
           persistent_volume_claim: "{{ ocp_pvc.stdout }}"
           kubernetes_server_version: "{{ kube_server_version }}"
-           
-  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True )
+          node_config_compute: "{{ ocp_compute_configmap.stdout }}"
+          node_config_master: "{{ ocp_master_configmap.stdout }}"
+          node_config_infra: "{{ ocp_infra_configmap.stdout }}"
+          web_console_config: "{{ ocp_webconsole_configmap.stdout }}"
+  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True ) 

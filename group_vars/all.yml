@@ -4,5 +4,3 @@ stockpile_user: user
 local_remote_user: user
 host_remote_user: user
 
-home_dir: "{{ ansible_env.HOME }}"
-stockpile_path: "{{home_dir}}/stockpile"

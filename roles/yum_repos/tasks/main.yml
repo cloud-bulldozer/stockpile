@@ -1,6 +1,6 @@
 ---
 - name: check if yum is present
-  shell: which yum
+  shell: python -c "import yum"
   register: yum_installed
   ignore_errors: yes
 

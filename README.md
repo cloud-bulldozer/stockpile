@@ -1,6 +1,105 @@
 # Stockpile
 Tool to gather information from systems using Ansible.
 
+# Contributing
+
+    Please visit http://gerrithub.io/ and Sign In with your github account.
+    Make sure to import your ssh keys.
+
+    Now, clone the github repository
+
+    ::
+
+        $ git clone https://github.com/redhat-performance/stockpile.git
+
+    Make sure, you've git-review installed, following should work.
+
+
+    ::
+
+        $ sudo pip install git-review
+
+
+    To set up your cloned repository to work with Gerrit
+
+    ::
+
+        $ git review -s
+
+    It's suggested to create a branch to do your work,
+    name it something related to the change you'd like to introduce.
+
+    ::
+
+        $ git branch my_special_enhancement
+        $ git checkout !$
+
+    Make your changes and then commit them using the instructions
+    below.
+
+    ::
+
+        $ git add /path/to/files/changed
+        $ git commit -m "your commit title"
+
+    Use a descriptive commit title followed by an empty space.
+    You should type a small justification of what you are
+    changing and why.
+
+    Now you're ready to submit your changes for review:
+
+    ::
+
+        $ git review
+
+
+    If you want to make another patchset from the same commit you can
+    use the amend feature after further modification and saving.
+
+    ::
+
+        $ git add /path/to/files/changed
+        $ git commit --amend
+        $ git review
+
+    If you want to submit a new patchset from a different location
+    (perhaps on a different machine or computer for example) you can
+    clone the repo again (if it doesn't already exist) and then
+    use git review against your unique Change-ID:
+
+    ::
+
+        $ git review -d Change-Id
+
+    Change-Id is the change id number as seen in Gerrit and will be
+    generated after your first successful submission. So, in case of
+    https://review.gerrithub.io/#/c/redhat-performance/scribe/+/425014/
+
+    You can either do git review -d 425014 as it's the number
+
+    or you can do git review -d If0b7b4f30615e46f009759b32a3fc533e811ebdc
+    where If0b7b4f30615e46f009759b32a3fc533e811ebdc is the change-id present
+
+    Make the changes on the branch that was setup by using the git review -d
+    (the name of the branch is along the lines of
+    review/username/branch_name/patchsetnumber).
+
+    Add the files to git and commit your changes using,
+
+    ::
+
+        $ git commit --amend
+
+    You can edit your commit message as well in the prompt shown upon
+    executing above command.
+
+    Finally, push the patch for review using,
+
+    ::
+
+        $ git review
+
+
 # How to add to the Stockpile?
 Stockpile uses Red Hat Ansible to collect system information. To add to the Stockpile, the user must create a new Anbile role that defines what they are looking to capture.
 
@@ -21,7 +120,7 @@ Please make sure that you follow the below mentioned norms:
 4. Prefix the dictionary with "stockpile_".
 5. Don't try to build the dictionary using the vars directly, lets say if you
 run a shell command to set var1, while building dictionary use var1.stdout
-6. Make sure to add conditions in the roles in order to ensure that the data 
+6. Make sure to add conditions in the roles in order to ensure that the data
 is collected only if the intended component is installed.
 
 Please look at the example below:

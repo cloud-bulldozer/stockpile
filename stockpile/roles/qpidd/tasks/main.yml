@@ -1,0 +1,19 @@
+---
+  # Gather qpidd related data
+  # The role captures data related
+  # to qpid and qdrouter
+  - name: Get the qpidd wcache-page-size
+    shell:
+       grep "wcache-page-size=" /etc/qpid/qpidd.conf | cut -d '=' -f 2
+    register: qpid_wcache_page_size
+    ignore_errors: true
+  - name: Get qdrouter worker-threads
+    shell:
+       grep "worker-threads:" /etc/qpid-dispatch/qdrouterd.conf | cut -d ':' -f 2
+    register: qdrouter_worker_threads
+    ignore_errors: true
+  - name: Store qpidd related facts
+    set_fact:
+      stockpile_satellite_qpidd:
+        qpid_wcache_page_size: {{ qpid_wcache_page_size.stdout }}
+        qdrouter_worker_threads: {{ qdrouter_worker_threads.stdout }}

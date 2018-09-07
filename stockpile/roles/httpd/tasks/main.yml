@@ -1,0 +1,33 @@
+---
+  # Allow for capturing of the httpd configuration
+  # TODO: Remove hardcoding of indice values
+  - name: Get keepalive settings
+    shell:
+       grep "KeepAlive" /etc/conf/httpd.conf | cut -d ' ' -f 2
+    register: httpd_keep_alive
+    ignore_errors: true
+  - shell:
+       grep "MaxKeepAliveRequests" /etc/conf/httpd.conf | cut -d ' ' -f 2
+    register: httpd_max_keepalive_requests
+    ignore_errors: true
+  - shell:
+       grep "KeepAliveTimeout" /etc/conf/httpd.conf | cut -d ' ' -f 2
+    register: httpd_keepalive_timeout
+    ignore_errors: true
+  - name: Get prefork configuration
+    shell:
+       grep "StartServers" /etc/httpd/conf.modules.d/prefork.conf | cut -d ' ' -f 11
+    register: httpd_start_servers
+    ignore_errors: true
+  - shell:
+       grep "ServerLimit" /etc/httpd/conf.modules.d/prefork.conf | cut -d ' ' -f 12
+    register: httpd_server_limit
+    ignore_errors: true
+  - name: Store Satellite httpd facts
+    set_fact:
+      stockpile_satellite_httpd:
+        httpd_keepalive: {{ httpd_keep_alive.stdout }}
+        http_max_keepalive_requests: {{ httpd_max_keepalive_requests.stdout }}
+        httpd_keepalive_timeout: {{ httpd_keepalive_timeout.stdout }}
+        httpd_prefork_start_servers: {{ httpd_start_servers.stdout }}
+        httpd_prefork_server_limit: {{ httpd_server_limit.stdout }}

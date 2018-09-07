@@ -1,0 +1,46 @@
+---
+  # Capture foreman related data
+  - name: Get foreman min instances
+    shell:
+       grep "PassengerMinInstances" /etc/httpd/conf.d/05-foreman-ssl.conf | cut -d ' ' -f 4
+    register: foreman_min_instances
+    ignore_errors: true
+  - name: Get foreman start timeout
+    shell:
+       grep "PassengerStartTimeout" /etc/httpd/conf.d/05-foreman-ssl.conf | cut -d ' ' -f 4
+    register: foreman_start_timeout
+    ignore_errors: true
+  - name: Capture foreman keepalive settings
+    shell:
+       grep "KeepAlive" /etc/httpd/conf.d/05-foreman-ssl.conf | cut -d ' ' -f 4
+    register: foreman_keepalive
+    ignore_errors: true
+  - shell:
+       grep "KeepAliveTimeout" /etc/httpd/conf.d/05-foreman-ssl.conf | cut -d ' ' -f 4
+    register: foreman_keepalive_timeout
+    ignore_errors: true
+  - shell:
+       grep "MaxKeepAliveRequests" /etc/httpd/conf.d/05-foreman-ssl.conf | cut -d ' ' -f 4
+    register: foreman_max_keepalive_requests
+    ignore_errors: true
+  - name: Get executors count
+    shell:
+       grep "EXECUTORS_COUNT=" /etc/sysconfig/foreman-tasks | cut -d '=' -f 2
+    register: dynflow_executor_count
+    ignore_errors: true
+  - name: Get executor memory limit
+    shell:
+       grep "EXECUTOR_MEMORY_LIMIT=" /etc/sysconfig/foreman-tasks | cut -d '=' -f 2
+    register: dynflow_executor_memory_limit
+    ignore_errors: true
+  - name: Store foreman related facts
+    set_fact:
+      stockpile_satellite_foreman:
+        foreman_min_instances: {{ foreman_min_instances.stdout }}
+        foreman_start_timeout: {{ foreman_start_timeout.stdout }}
+        foreman_keepalive: {{ foreman_keepalive.stdout }}
+        foreman_keepalive_timeout: {{ foreman_keepalive_timeout.stdout }}
+        foreman_max_keepalive_requests: {{ foreman_max_keepalive_requests.stdout }}
+        foreman_dynflow_executor_count: {{ dynflow_executor_count.stdout }}
+        foreman_dynflow_executor_mem_limit: {{ dynflow_executor_memory_limit }}
+

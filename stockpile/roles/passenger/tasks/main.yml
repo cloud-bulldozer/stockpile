@@ -1,0 +1,12 @@
+---
+  # Enable collection of data from passenger
+  - name: Get Passenger MaxPoolSize
+    shell:
+       grep "PassengerMaxPoolSize" /etc/httpd/conf.d/passenger.conf | cut -d ' ' -f 3
+    register: passenger_max_pool_size
+    ignore_errors: true
+  - name: Store Passenger Facts
+    set_fact:
+      stockpile_satellite_passenger:
+        passenger_max_pool_size: {{ passenger_max_pool_size.stdout }}
+

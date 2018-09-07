@@ -21,6 +21,8 @@ Please make sure that you follow the below mentioned norms:
 4. Prefix the dictionary with "stockpile_".
 5. Don't try to build the dictionary using the vars directly, lets say if you
 run a shell command to set var1, while building dictionary use var1.stdout
+6. Make sure to add conditions in the roles in order to ensure that the data 
+is collected only if the intended component is installed.
 
 Please look at the example below:
 

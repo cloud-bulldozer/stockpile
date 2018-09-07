@@ -27,12 +27,6 @@
     - name: get the docker storage driver info
       shell: docker info | grep -w "Storage Driver" | cut -d ':' -f2
       register: docker_storage_driver_info
-
-    - name: set docker info as facts
-      set_fact:
-        openshift_docker:
-          - version: "{{ docker_version_installed.stdout }}"
-          - storage_driver: "{{ docker_storage_driver_info.stdout }}"
   when: ( docker_installed.rc == 0 and docker_status.rc == 0 )
 
 - name: check if oc client is installed
@@ -87,6 +81,8 @@
       set_fact:
         stockpile_openshift_node:
           virtualization: "{{ virtualization_info.stdout }}"
+          docker_version: "{{ docker_version_installed.stdout }}"
+          docker_storage_driver: "{{ docker_storage_driver_info.stdout }}"
           tests_version: "{{ ocp_tests_version.stdout }}"
           pod_version: "{{ ocp_pod_version.stdout }}"
           node_version: "{{ ocp_node_version.stdout }}"

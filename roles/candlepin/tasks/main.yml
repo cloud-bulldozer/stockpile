@@ -1,0 +1,12 @@
+---
+  # Capture configuration from candlepin
+  - name: Get quartz maxConnections
+    shell:
+       grep "org.quartz.dataSource.myDS.maxConnections" /etc/candlepin/candlepin.conf | cut -d '=' -f 2
+    register: quartz_max_connections
+    ignore_errors: true
+
+  - name: Store the candlepin facts
+    set_fact:
+      stockpile_satellite_candlepin:
+        candlepin_quartz_max_connections: {{ quartz_max_connections.stdout }}

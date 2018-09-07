@@ -1,0 +1,17 @@
+---
+  # Gather pulp configuration
+  - name: Get pulp download concurrency
+    shell:
+       grep "download_concurrency" /etc/pulp/server.conf | cut -d ':' -f 2
+    register: pulp_download_concurrency
+    ignore_errors: true
+  - name: Get pulp download interval
+    shell:
+       grep "download_interval" /etc/pulp/server.conf | cut -d ':' -f 2
+    register: pulp_download_interval
+    ignore_errors: true
+  - name: Store pulp related facts
+    set_fact:
+      stockpile_satellite_pulp:
+        pulp_download_concurrency: {{ pulp_download_concurrency.stdout }}
+        pulp_download_interval: {{ pulp_download_interval.stdout }}

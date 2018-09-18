@@ -3,6 +3,4 @@
 stockpile_user: root
 local_remote_user: root
 host_remote_user: root
-
-home_dir: "{{ ansible_env.HOME }}"
-stockpile_path: "/opt/stockpile"
+stockpile_output_path: /tmp/stockpile.json

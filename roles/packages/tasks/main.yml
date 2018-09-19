@@ -3,3 +3,10 @@
 - name: get the rpm package facts
   package_facts:
     manager: "auto"
+  when:  "ansible_version.full.split('.')[0] >= '2' and ansible_version.full.split('.')[1] >= '5'"
+  register: packages_run
+  ignore_errors: True
+
+- set_fact:
+    stockpile_packages: "{{ packages_run.ansible_facts.packages  }}"
+  when: packages_run is succeeded

@@ -4,7 +4,7 @@
   become: true
   roles:
     - common
-    - packages
+    #- packages
     - dmidecode
     - yum_repos
     - ceph

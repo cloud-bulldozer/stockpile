@@ -1,0 +1,62 @@
+---
+
+- name: check for lscpu
+  shell: which lscpu
+  register: lscpu_installed
+  ignore_errors: yes
+
+- name: capture lscpu
+  shell: lscpu
+  register: lscpu_info
+  when: lscpu_installed.rc == 0
+
+- name: check for cpu vulnerabilities
+  stat:
+    path: /sys/devices/system/cpu/vulnerabilities
+  register: vulnerabilities_path
+  ignore_errors: yes
+
+- block :
+  - name: capture vulnerabilities files
+    find:
+      paths: /sys/devices/system/cpu/vulnerabilities
+    register: vulnerabilities_files
+    ignore_errors: true
+
+  - name: capture state of vulnerabilities
+    become: true
+    shell: cat "{{ item.path }}"
+    with_items: "{{ vulnerabilities_files.files }}"
+    register: vuln_state
+    when: vulnerabilities_files.matched > 0
+  when: vulnerabilities_path.stat.isdir
+
+- name: check for kernel debug
+  stat:
+    path: /sys/kernel/debug/x86/
+  register: kernel_debug_path
+  ignore_errors: yes
+
+- block:
+  - name: check kernel debug
+    find:
+      paths: /sys/kernel/debug/x86/
+    register: kernel_debug
+    ignore_errors: yes
+
+  - name: capture kernel debug state
+    become: true
+    shell: cat "{{ item.path }}"
+    with_items: "{{ kernel_debug.files }}"
+    ignore_errors: yes
+    register: debug_state
+    when: kernel_debug.matched > 0
+
+  when: kernel_debug_path.stat.isdir
+
+- name: set the collected cpu info as facts
+  set_fact:
+    stockpile_cpuinfo:
+      lscpu: "{{ lscpu_info.stdout }}"
+      vulnerabilities: "{{ vuln_state.results }}"
+      kernel_debug: "{{ debug_state.results }}"

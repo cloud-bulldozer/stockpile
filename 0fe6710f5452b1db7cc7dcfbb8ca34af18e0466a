@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd92bb1f_edaab555",
+        "filename": "roles/cpu/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T12:14:13Z",
+      "side": 1,
+      "message": "Add a preliminary check to ensure that the directory exists and then check if it is a dir.",
+      "range": {
+        "startLine": 55,
+        "startChar": 26,
+        "endLine": 55,
+        "endChar": 36
+      },
+      "revId": "0fe6710f5452b1db7cc7dcfbb8ca34af18e0466a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e093dee_8c3bf5e9",
+        "filename": "roles/cpu/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T12:14:13Z",
+      "side": 1,
+      "message": "stdout i guess",
+      "range": {
+        "startLine": 61,
+        "startChar": 38,
+        "endLine": 61,
+        "endChar": 45
+      },
+      "revId": "0fe6710f5452b1db7cc7dcfbb8ca34af18e0466a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

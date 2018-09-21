@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e20cd581_bdf5659d",
+        "filename": "roles/kernel-debug/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T15:08:18Z",
+      "side": 1,
+      "message": "kernel debug state perhaps?",
+      "range": {
+        "startLine": 25,
+        "startChar": 26,
+        "endLine": 25,
+        "endChar": 34
+      },
+      "revId": "7e8ca28c6a9a641233003d31ace4ffae34d18f1e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8032b287_dc3f53fb",
+        "filename": "roles/kernel-debug/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T15:08:18Z",
+      "side": 1,
+      "message": "Also add the check kernel_debug_path.stat.exists",
+      "range": {
+        "startLine": 29,
+        "startChar": 8,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "7e8ca28c6a9a641233003d31ace4ffae34d18f1e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "78590346_96479a7d",
+        "filename": "roles/vulnerabilities/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T15:08:18Z",
+      "side": 1,
+      "message": "cpu_vulnerabilities perhaps? as https://review.gerrithub.io/#/c/redhat-performance/stockpile/+/426291/3/roles/cpu/tasks/main.yml is setting as stockpile_cpuinfo as well and we don\u0027t want to overwrite.",
+      "range": {
+        "startLine": 26,
+        "startChar": 14,
+        "endLine": 26,
+        "endChar": 21
+      },
+      "revId": "7e8ca28c6a9a641233003d31ace4ffae34d18f1e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00d58d18_5f19ea26",
+        "filename": "roles/vulnerabilities/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T15:08:18Z",
+      "side": 1,
+      "message": "we need to add stdout as it\u0027s collecting a lot more information thann needed",
+      "range": {
+        "startLine": 27,
+        "startChar": 38,
+        "endLine": 27,
+        "endChar": 45
+      },
+      "revId": "7e8ca28c6a9a641233003d31ace4ffae34d18f1e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

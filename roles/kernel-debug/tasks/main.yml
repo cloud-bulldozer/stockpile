@@ -1,0 +1,29 @@
+---
+
+- name: check for kernel debug
+  stat:
+    path: /sys/kernel/debug/x86/
+  register: kernel_debug_path
+  ignore_errors: yes
+
+- block:
+  - name: check kernel debug
+    find:
+      paths: /sys/kernel/debug/x86/
+    register: kernel_debug
+    ignore_errors: yes
+
+  - name: capture kernel debug state
+    become: true
+    shell: cat "{{ item.path }}"
+    with_items: "{{ kernel_debug.files }}"
+    ignore_errors: yes
+    register: debug_state
+    when: kernel_debug.matched > 0
+  when: kernel_debug_path.stat.exists
+
+- name: set the collected cpu info as facts
+  set_fact:
+    stockpile_kernel_debug:
+      kernel_debug: "{{ debug_state.results }}"
+  when: kernel_debug_path.stat.exists

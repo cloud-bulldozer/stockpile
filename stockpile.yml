@@ -5,6 +5,10 @@
   roles:
     - common
     #- packages
+    - cpu
+    - vulnerabilities
+    - kernel-debug
+    - packages
     - dmidecode
     - yum_repos
     - ceph

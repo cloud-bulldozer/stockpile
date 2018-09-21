@@ -1,0 +1,30 @@
+---
+
+- name: check for cpu vulnerabilities
+  stat:
+    path: /sys/devices/system/cpu/vulnerabilities
+  register: vulnerabilities_path
+  ignore_errors: yes
+
+- block :
+  - name: capture vulnerabilities files
+    find:
+      paths: /sys/devices/system/cpu/vulnerabilities
+    register: vulnerabilities_files
+    ignore_errors: true
+
+  - name: capture state of vulnerabilities
+    become: true
+    shell: cat "{{ item.path }}"
+    with_items: "{{ vulnerabilities_files.files }}"
+    register: vuln_state
+    when: vulnerabilities_files.matched > 0
+  when: vulnerabilities_path.stat.exists
+
+- name: set the collected cpu vulnerabilities info as facts
+  set_fact:
+    stockpile_cpu_vulnerabilities: |
+      {% for i in vuln_state.results %}
+      {{i.item.path}}: "{{i.stdout}}"
+      {% endfor %}
+  when: vuln_state is defined

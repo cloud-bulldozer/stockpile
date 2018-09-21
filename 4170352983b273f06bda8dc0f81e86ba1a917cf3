@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a832ce5_d4b82f70",
+        "filename": "roles/vulnerabilities/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-09-21T15:25:04Z",
+      "side": 1,
+      "message": "minor nit: cpu_vulnerabilities perhaps?",
+      "range": {
+        "startLine": 26,
+        "startChar": 14,
+        "endLine": 26,
+        "endChar": 29
+      },
+      "revId": "4170352983b273f06bda8dc0f81e86ba1a917cf3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

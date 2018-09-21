@@ -4,6 +4,7 @@
   become: true
   roles:
     - common
+    - cpu
     - packages
     - dmidecode
     - yum_repos

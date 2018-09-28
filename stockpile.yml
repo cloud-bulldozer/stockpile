@@ -8,7 +8,6 @@
     - cpu
     - cpu_vulnerabilities
     - kernel-debug
-    - packages
     - dmidecode
     - yum_repos
     - ceph

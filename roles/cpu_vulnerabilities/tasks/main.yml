@@ -6,7 +6,11 @@
   register: vulnerabilities_path
   ignore_errors: yes
 
-- block :
+- block:
+  - name: Initialize var
+    set_fact:
+      stockpile_cpu_vulnerabilities: []
+
   - name: capture vulnerabilities files
     find:
       paths: /sys/devices/system/cpu/vulnerabilities
@@ -25,6 +29,6 @@
   set_fact:
     stockpile_cpu_vulnerabilities: |
       {% for i in vuln_state.results %}
-      {{i.item.path}}: "{{i.stdout}}"
+      {{ stockpile_cpu_vulnerabilities }} + [ {{i.item.path}}: "{{i.stdout}}" ]
       {% endfor %}
   when: vuln_state is defined

@@ -1,31 +1,10 @@
 ---
+- name: Get the output of all files
+  shell: "grep -H '' /sys/kernel/debug/x86/*"
+  register: shell_output
 
-- name: check for kernel debug
-  stat:
-    path: /sys/kernel/debug/x86/
-  register: kernel_debug_path
-  ignore_errors: yes
-
-- block:
-  - name: check kernel debug
-    find:
-      paths: /sys/kernel/debug/x86/
-    register: kernel_debug
-    ignore_errors: yes
-
-  - name: capture kernel debug state
-    become: true
-    shell: cat "{{ item.path }}"
-    with_items: "{{ kernel_debug.files }}"
-    ignore_errors: yes
-    register: debug_state
-    when: kernel_debug.matched > 0
-  when: kernel_debug_path.stat.exists
-
-- name: set the collected kernel debug info as facts
+- name: set fact 
   set_fact:
-    stockpile_kernel_debug: |
-      {% for i in debug_state.results %}
-      {{i.item.path}}: "{{i.stdout}}"
-      {% endfor %}
-  when: kernel_debug_path.stat.exists
+    stockpile_kernel_debug: "{{ shell_output.stdout_lines }}"
+  when: shell_output.stdout_lines is defined
+

@@ -7,6 +7,10 @@
   ignore_errors: yes
 
 - block:
+  - name: initialize var
+    set_fact:
+      stockpile_kernel_debug: []
+
   - name: check kernel debug
     find:
       paths: /sys/kernel/debug/x86/
@@ -24,8 +28,6 @@
 
 - name: set the collected kernel debug info as facts
   set_fact:
-    stockpile_kernel_debug: |
-      {% for i in debug_state.results %}
-      {{i.item.path}}: "{{i.stdout}}"
-      {% endfor %}
-  when: kernel_debug_path.stat.exists
+    stockpile_kernel_debug: "{{ stockpile_kernel_debug }} + [ '{{item.item.path}}: {{item.stdout}}' ]"
+  with_items: "{{ debug_state.results }}"
+  when: debug_state is defined

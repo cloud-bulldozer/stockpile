@@ -11,11 +11,8 @@
   become: true
   shell: python /tmp/openstack-config-parser.py ceilometer /tmp/out.yml
   when: ceilometer_config.stat.exists
+  register: ceilometer_data
 
-- name: Fetch output
-  fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
-  when: ceilometer_config.stat.exists
-
-- name: Load configuration variables
-  include_vars: /tmp/out-{{ inventory_hostname }}.yml
-  when: ceilometer_config.stat.exists
+- name: display the output
+  debug:
+    var: ceilometer_data.stdout

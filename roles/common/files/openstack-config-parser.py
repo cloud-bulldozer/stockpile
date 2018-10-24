@@ -50,7 +50,11 @@ def parse_config(serviceName, fileName):
             if '#' not in line and valid_line and not section == None and len(pair) == 2:
                 pair[0] = strip_chars(pair[0])
                 pair[1] = strip_chars(pair[1])
-                values["openstack_S_" + serviceName + "_S_" + section + "_S_" + pair[0]] = pair[1]
+                if serviceName not in values.keys():
+                    values[serviceName] = {}
+                if section not in values[serviceName].keys():
+                    values[serviceName][section] = {}
+                values[serviceName][section][pair[0]] = pair[1]
     return values
 
 
@@ -71,13 +75,13 @@ def try_type(val):
                 return "\"" + val + "\""
 
 
-def add_conf_location(serviceName, fileName, values): 
+def add_conf_location(serviceName, fileName, values):
     # Stores the exact location we gathered this config from.
-    index = "openstack_S_" + serviceName + "_S_" + "Browbeat" + "_S_" + "gather_conf_path"
-    if index in values:
-        values[index].append(fileName)
+    index = "gather_conf_path"
+    if index in values[serviceName].keys():
+        values[serviceName][index].append(fileName)
     else:
-        values[index] = [fileName]
+        values[serviceName][index] = [fileName]
 
 def print_vars_file(values, fileName):
     with open(fileName, 'w') as output:
@@ -99,7 +103,7 @@ def get_configs_list(path, extension='.conf'):
     return configs
 
 def get_neutron_plugin(output, cfg_path):
-    plugin = output['openstack_S_neutron_S_DEFAULT_S_core_plugin']
+    plugin = output['neutron']['DEFAULT']['core_plugin']
     plugin_path = "{}/plugins/{}/".format(cfg_path, plugin)
     for item in get_configs_list(plugin_path, extension='.ini'):
         full_path = "{}/{}".format(plugin_path,
@@ -147,8 +151,8 @@ def main():
     if 'neutron' in service_name:
         output.update(get_neutron_plugin(output, cfg_path))
 
-    print_vars_file(output, outfile)
+    #print_vars_file(output, outfile)
+    return output
 
 if __name__ == '__main__':
     sys.exit(main())
-

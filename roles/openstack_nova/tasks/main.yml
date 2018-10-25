@@ -1,0 +1,12 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py nova
+  ignore_errors: true
+  register: nova_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_nova: "{{ nova_data.stdout }}"
+  when: nova_data is succeeded

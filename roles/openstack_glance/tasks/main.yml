@@ -1,0 +1,12 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py glance
+  ignore_errors: true
+  register: glance_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_glance: "{{ glance_data.stdout }}"
+  when: glance_data is succeeded

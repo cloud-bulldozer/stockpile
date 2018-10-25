@@ -1,0 +1,47 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py neutron
+  ignore_errors: true
+  register: neutron_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_neutron: "{{ neutron_data.stdout }}"
+  when: neutron_data is succeeded
+
+# The next couple of tasks probably need to be in their own role
+- name: Get ovs version
+  shell: ovs-vswitchd --version | grep vSwitch | awk {'print$4'}
+  register: ovs_version
+
+- name: Set ovs version fact
+  set_fact:
+    stockpile_openstack_ovs_version: "{{ ovs_version.stdout }}"
+
+- name: set config path for containers
+  set_fact:
+    neutron_config_path={{ config_path }}/neutron/etc
+  when: containers is defined
+
+- name: set config path
+  set_fact:
+    neutron_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: Get neutron ovs agent ovsdb setting
+  shell: crudini --get {{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
+  register: ovsdb_status
+  ignore_errors: true
+  become: true
+
+- name: Set Neutron OVS ovsdb fact
+  set_fact:
+    stockpile_openstack_neutron_ovsdb: "{{ ovsdb_status.stdout }}"
+  when: (ovsdb_status.stdout.find('native') != -1 or ovsdb_status.stdout.find('vsctl') != -1)
+
+- name: Set Neutron OVS ovsdb fact
+  set_fact:
+    stockpile_openstack_neutron_ovsdb: "vsctl"
+  when: (ovsdb_status.stdout.find('native') == -1 and ovsdb_status.stdout.find('vsctl') == -1)

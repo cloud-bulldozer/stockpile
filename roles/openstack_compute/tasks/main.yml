@@ -1,0 +1,16 @@
+---
+  
+- name: Check for Nested Virtualization
+  shell: cat /proc/cpuinfo | grep hypervisor
+  register: nested_virt
+  ignore_errors: true
+
+- name: Set Nested Virtualization flag
+  set_fact:
+    stockpile_openstack_nested_virt: true
+  when: nested_virt.stdout != ""
+
+- name: Set Nested Virtualization flag
+  set_fact:
+    stockpile_openstack_nested_virt: false
+  when: nested_virt.stdout == ""

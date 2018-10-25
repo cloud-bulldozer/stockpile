@@ -1,0 +1,70 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py keystone
+  ignore_errors: true
+  register: keystone_data
+
+- name: Determine if Keystone is deployed in eventlet
+  shell: ps afx | grep "[Kk]eystone-all" -c
+  register: keystone_in_eventlet
+  changed_when: false
+  ignore_errors: True
+
+- name: store keystone facts
+  set_fact:
+    stockpile_openstack_keystone: "{{ keystone_data.stdout }}"
+  when: keystone_data is succeeded
+
+- name: Set keystone_deployment variable to eventlet
+  set_fact:
+    stockpile_openstack_keystone_deployment='eventlet'
+  when: keystone_in_eventlet.stdout|int > 0
+
+- name: Set keystone_deployment variable to httpd
+  set_fact:
+    stockpile_openstack_keystone_deployment='httpd'
+  when: keystone_in_eventlet.stdout|int == 0
+
+- name: set keystone config path for containers
+  set_fact:
+    keystone_config_path={{ config_path }}/keystone/etc
+  when: containers is defined
+
+- name: set keystone config path
+  set_fact:
+    keystone_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: check if conf file exists
+  stat: path={{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf
+  register: keystone_config
+  when: keystone_in_eventlet.stdout|int == 0
+
+- block:
+  - name: Determine number of keystone admin processes for httpd
+    shell: grep processes {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: keystone_admin_worker_processes
+
+  - name: Determine number of keystone admin threads for httpd
+    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: keystone_admin_worker_threads
+
+  - name: Determine number of keystone main threads for httpd
+    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: keystone_main_worker_threads
+
+  - name: Determine number of keystone main processes for httpd
+    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: keystone_main_worker_processes
+
+  - name: Set keystone httpd worker facts
+    set_fact:
+      stockpile_openstack_keystone_admin_workers:
+        processes: "{{ keystone_admin_worker_processes.stdout }}"
+        threads: "{{ keystone_admin_worker_threads.stdout }}"
+      stockpile_openstack_keystone_main_workers:
+        processes: "{{ keystone_main_worker_processes.stdout }}"
+        threads: "{{ keystone_main_worker_threads.stdout }}"
+  when: keystone_in_eventlet.stdout|int == 0 and keystone_config.stat.exists

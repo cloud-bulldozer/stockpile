@@ -1,25 +1,10 @@
 ---
-#
-# Tasks to set keystone facts
-#
 
-- name: Check that Keystone is installed
+- name: Parse config
   become: true
-  stat: path=/etc/keystone/keystone.conf
-  register: keystone_config
-
-- name: Parse Keystone config
-  become: true
-  shell: python /tmp/openstack-config-parser.py keystone /tmp/out.yml
-  when: keystone_config.stat.exists
-
-- name: Fetch output
-  fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
-  when: keystone_config.stat.exists
-
-- name: Load configuration variables
-  include_vars: /tmp/out-{{ inventory_hostname }}.yml
-  when: keystone_config.stat.exists
+  script: ../common/files/openstack-config-parser.py keystone
+  ignore_errors: true
+  register: keystone_data
 
 - name: Determine if Keystone is deployed in eventlet
   shell: ps afx | grep "[Kk]eystone-all" -c
@@ -27,13 +12,12 @@
   changed_when: false
   ignore_errors: True
 
-- name: Set keystone_deployment variable to httpd
-  set_fact: openstack_keystone_deployment='httpd'
-  when: keystone_in_eventlet.stdout|int == 0
-
 - name: Set keystone_deployment variable to eventlet
-  set_fact: openstack_keystone_deployment='eventlet'
-  when: keystone_in_eventlet.stdout|int > 0
+  set_fact:
+    stockpile_openstack_keystone:
+      - keystone_deployment='eventlet'
+      - "{{ keystone_data.stdout }}"
+  when: keystone_in_eventlet.stdout|int > 0 and keystone_data is succeeded
 
 - name: Determine number of keystone admin processes for httpd
   shell: grep processes /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
@@ -57,8 +41,14 @@
 
 - name: Set keystone httpd worker facts
   set_fact:
-    openstack_S_keystone_S_admin_workers_S_processes: "{{ keystone_admin_worker_processes.stdout }}"
-    openstack_S_keystone_S_admin_workers_S_threads: "{{ keystone_admin_worker_threads.stdout }}"
-    openstack_S_keystone_S_main_workers_S_processes: "{{ keystone_main_worker_processes.stdout }}"
-    openstack_S_keystone_S_main_workers_S_threads: "{{ keystone_main_worker_threads.stdout }}"
-  when: keystone_in_eventlet.stdout|int == 0
+    stockpile_openstack_keystone:
+      keystone:
+        - admin_workers:
+            processes: "{{ keystone_admin_worker_processes.stdout }}"
+            threads: "{{ keystone_admin_worker_threads.stdout }}"
+        - main_workers:
+            processes: "{{ keystone_main_worker_processes.stdout }}"
+            threads: "{{ keystone_main_worker_threads.stdout }}"
+        - keystone_deployment: "httpd"
+        - "{{ keystone_data.stdout }}"
+  when: keystone_in_eventlet.stdout|int == 0 and keystone_data is succeeded

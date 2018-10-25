@@ -15,19 +15,18 @@
     - openshift-nodes
     #- example
     #- example2
-    #- compute
-    #- common
-    #- nova
-    #- neutron
-    #- keystone
-    #- ceilometer
-    #- gnocchi
-    #- cinder
-    #- heat
-    #- mysql
-    #- rabbitmq
-    #- glance
-    #- undercloud
+    - compute
+    - nova
+    - neutron
+    - keystone
+    - ceilometer
+    - gnocchi
+    - cinder
+    - heat
+    - mysql
+    - rabbitmq
+    - glance
+    - undercloud
 
 - hosts: stockpile
   gather_facts: false

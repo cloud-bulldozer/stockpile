@@ -1,0 +1,12 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py heat
+  ignore_errors: true
+  register: heat_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_heat: "{{ heat_data.stdout }}"
+  when: heat_data is succeeded

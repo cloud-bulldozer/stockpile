@@ -1,0 +1,12 @@
+---
+
+- name: Parse config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py cinder
+  ignore_errors: true
+  register: cinder_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_cinder: "{{ cinder_data.stdout }}"
+  when: cinder_data is succeeded

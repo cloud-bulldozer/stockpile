@@ -3,7 +3,7 @@
   remote_user: "{{ host_remote_user }}"
   become: true
   roles:
-    - common
+    - openstack_common
     #- packages
     - cpu
     - cpu_vulnerabilities
@@ -15,19 +15,18 @@
     - openshift-nodes
     #- example
     #- example2
-    #- compute
-    #- common
-    #- nova
-    #- neutron
-    #- keystone
-    #- ceilometer
-    #- gnocchi
-    #- cinder
-    #- heat
-    #- mysql
-    #- rabbitmq
-    #- glance
-    #- undercloud
+    - openstack_compute
+    - openstack_nova
+    - openstack_neutron
+    - openstack_keystone
+    - openstack_ceilometer
+    - openstack_gnocchi
+    - openstack_cinder
+    - openstack_heat
+    - openstack_mysql
+    - openstack_rabbitmq
+    - openstack_glance
+    - openstack_undercloud
 
 - hosts: stockpile
   gather_facts: false

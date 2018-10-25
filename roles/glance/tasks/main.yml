@@ -1,14 +1,12 @@
 ---
-#
-# Tasks to get Glance facts
-#
 
-- name: Parse Glance config files
+- name: Parse config
   become: true
-  shell: "python /tmp/openstack-config-parser.py glance /tmp/out.yml"
+  script: ../common/files/openstack-config-parser.py glance
+  ignore_errors: true
+  register: glance_data
 
-- name: Fetch output
-  fetch: "src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes"
-
-- name: Load configuration variables
-  include_vars: /tmp/out-{{ inventory_hostname }}.yml
+- name: setting fact
+  set_fact:
+    stockpile_openstack_glance: "{{ glance_data.stdout }}"
+  when: glance_data is succeeded

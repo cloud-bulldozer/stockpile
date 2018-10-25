@@ -50,7 +50,11 @@ def parse_config(serviceName, fileName):
             if '#' not in line and valid_line and not section == None and len(pair) == 2:
                 pair[0] = strip_chars(pair[0])
                 pair[1] = strip_chars(pair[1])
-                values["openstack_S_" + serviceName + "_S_" + section + "_S_" + pair[0]] = pair[1]
+                if serviceName not in values.keys():
+                    values[serviceName] = {}
+                if section not in values[serviceName].keys():
+                    values[serviceName][section] = {}
+                values[serviceName][section][pair[0]] = pair[1]
     return values
 
 
@@ -71,13 +75,13 @@ def try_type(val):
                 return "\"" + val + "\""
 
 
-def add_conf_location(serviceName, fileName, values): 
+def add_conf_location(serviceName, fileName, values):
     # Stores the exact location we gathered this config from.
-    index = "openstack_S_" + serviceName + "_S_" + "Browbeat" + "_S_" + "gather_conf_path"
-    if index in values:
-        values[index].append(fileName)
+    index = "gather_conf_path"
+    if index in values[serviceName].keys():
+        values[serviceName][index].append(fileName)
     else:
-        values[index] = [fileName]
+        values[serviceName][index] = [fileName]
 
 def print_vars_file(values, fileName):
     with open(fileName, 'w') as output:
@@ -93,28 +97,33 @@ def is_containerized(service_name):
 
 def get_configs_list(path, extension='.conf'):
     configs = []
-    for item in os.listdir(path):
-        if item.endswith(extension):
-            configs.extend([item])
-    return configs
+    if os.path.isdir(path):
+        for item in os.listdir(path):
+            if item.endswith(extension):
+                configs.extend([item])
+        return configs
+    else:
+        sys.exit("path doesn't exist\n")
 
 def get_neutron_plugin(output, cfg_path):
-    plugin = output['openstack_S_neutron_S_DEFAULT_S_core_plugin']
+    plugin = output['neutron']['DEFAULT']['core_plugin']
     plugin_path = "{}/plugins/{}/".format(cfg_path, plugin)
     for item in get_configs_list(plugin_path, extension='.ini'):
         full_path = "{}/{}".format(plugin_path,
                                    item)
         output.update(parse_config("neutron-plugin", full_path))
-        add_conf_location("neutron", full_path, output)
+        if output!={}:
+            add_conf_location("neutron", full_path, output)
     return output
 
 def main():
-    if len(sys.argv) < 3:
-        print("usage: openstack-config-parser.py [service] [output file]")
-        exit(1)
+    if len(sys.argv) < 2:
+        sys.stderr.write("usage: openstack-config-parser.py [service] (output file)")
+        sys.exit(1)
 
     service_name = sys.argv[1]
-    outfile = sys.argv[2]
+    if len(sys.argv) > 2:
+        outfile = sys.argv[2]
 
     # This is a list of services that require exceptions from the usual
     # pattern when gathering their config files
@@ -125,8 +134,8 @@ def main():
     if 'undercloud' in service_name:
         cfg_path = "/home/stack"
     elif in_container and service_name not in pattern_exceptions:
-        cfg_path = "/var/lib/config-data/{}/etc/{}".format(service_name,
-                                                           service_name)
+        cfg_path = "/var/lib/config-data/puppet-generated/{}/etc/{}".format(
+            service_name, service_name)
     # Glance has all configs in a folder named glance_api, ps shows no
     # processes outside of the container, so I assume those are the right
     # configs, even though the container is also named glance-api
@@ -136,19 +145,25 @@ def main():
     else:
         cfg_path = "/etc/{}".format(service_name)
 
-    print("Parsing all .conf files in {}".format(cfg_path))
+    #print("Parsing all .conf files in {}".format(cfg_path))
     output = {}
     for item in get_configs_list(cfg_path):
         full_path = "{}/{}".format(cfg_path,
                                    item)
         output.update(parse_config(service_name, full_path))
-        add_conf_location(service_name, full_path, output)
+        if output != {}:
+            add_conf_location(service_name, full_path, output)
     # Required to find and load the active neutron plugin file.
-    if 'neutron' in service_name:
+    if 'neutron' in service_name and 'core_plugin' in output['neutron']['DEFAULT'].keys():
         output.update(get_neutron_plugin(output, cfg_path))
+    if len(sys.argv) > 2:
+        print_vars_file(output, outfile)
+    if output == {}:
+        sys.stderr.write("nothing found")
+        return 1
 
-    print_vars_file(output, outfile)
+    print output
+    return 0
 
 if __name__ == '__main__':
     sys.exit(main())
-

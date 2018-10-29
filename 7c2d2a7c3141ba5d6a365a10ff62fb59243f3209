@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "020765fa_8ce892c4",
+        "filename": "roles/ceilometer/tasks/main.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-10-29T20:14:26Z",
+      "side": 1,
+      "message": "why ignoring errors?",
+      "revId": "7c2d2a7c3141ba5d6a365a10ff62fb59243f3209",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad49e91d_af8d69d5",
+        "filename": "roles/cinder/tasks/main.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-10-29T20:14:26Z",
+      "side": 1,
+      "message": "also, full path to script?",
+      "revId": "7c2d2a7c3141ba5d6a365a10ff62fb59243f3209",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

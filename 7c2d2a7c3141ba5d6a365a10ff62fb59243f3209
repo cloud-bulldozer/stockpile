@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da442c53_3fac9dd2",
+        "filename": "roles/ceilometer/tasks/main.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-10-29T21:54:30Z",
+      "side": 1,
+      "message": "Because when using script module, I can\u0027t write to stderr :( so basically i\u0027m using exit(1). So in case of lets say this role being run on a host which ends up in config-parser failing, because there are no config files it\u0027ll lead to task failing and thus the playbook failing which we don\u0027t want in stockpile. So instead I ignore errors and only set fact is the task had succeeded",
+      "parentUuid": "020765fa_8ce892c4",
+      "revId": "7c2d2a7c3141ba5d6a365a10ff62fb59243f3209",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad49e91d_af8d69d5",
         "filename": "roles/cinder/tasks/main.yml",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2018-10-29T20:14:26Z",
       "side": 1,
       "message": "also, full path to script?",
+      "revId": "7c2d2a7c3141ba5d6a365a10ff62fb59243f3209",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e922ef72_c118cfb2",
+        "filename": "roles/cinder/tasks/main.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-10-29T21:54:30Z",
+      "side": 1,
+      "message": "Full path meaning? Instead of copying script, executing it and then deleting it. I\u0027m using script module, and instead of copying same script across in all roles, i\u0027m just pointing it to use it\u0027s sister roles script.",
+      "parentUuid": "ad49e91d_af8d69d5",
       "revId": "7c2d2a7c3141ba5d6a365a10ff62fb59243f3209",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false

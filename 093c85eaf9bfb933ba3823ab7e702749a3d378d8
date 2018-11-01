@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "efb4d94d_ce0565fb",
+        "filename": "roles/openstack_common/files/openstack-config-parser.py",
+        "patchSetId": 17
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-11-01T14:41:11Z",
+      "side": 1,
+      "message": "Left overs?",
+      "revId": "093c85eaf9bfb933ba3823ab7e702749a3d378d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43cf0619_75b9b720",
+        "filename": "roles/openstack_common/tasks/main.yml",
+        "patchSetId": 17
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-11-01T14:41:11Z",
+      "side": 1,
+      "message": "ignore_errors?",
+      "revId": "093c85eaf9bfb933ba3823ab7e702749a3d378d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93e05e0b_70f62cdf",
+        "filename": "roles/openstack_compute/tasks/main.yml",
+        "patchSetId": 17
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-11-01T14:41:11Z",
+      "side": 1,
+      "message": "whitepsace",
+      "revId": "093c85eaf9bfb933ba3823ab7e702749a3d378d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

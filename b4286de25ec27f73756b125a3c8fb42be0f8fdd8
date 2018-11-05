@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b95a258_4d9a3baf",
+        "filename": "roles/openstack_common/files/openstack-config-parser.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1003618
+      },
+      "writtenOn": "2018-11-05T12:06:18Z",
+      "side": 1,
+      "message": "Remove this?",
+      "revId": "b4286de25ec27f73756b125a3c8fb42be0f8fdd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

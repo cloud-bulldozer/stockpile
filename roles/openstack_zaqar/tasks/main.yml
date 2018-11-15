@@ -1,0 +1,12 @@
+---
+
+- name: Parse zaqar config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py zaqar
+  ignore_errors: true
+  register: zaqar_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_zaqar: "{{ zaqar_data.stdout }}"
+  when: zaqar_data is succeeded

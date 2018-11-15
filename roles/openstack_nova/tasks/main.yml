@@ -10,3 +10,34 @@
   set_fact:
     stockpile_openstack_nova: "{{ nova_data.stdout }}"
   when: nova_data is succeeded
+
+- name: set nova config path for containers
+  set_fact:
+    nova_config_path={{ config_path }}/nova/etc
+  when: containers is defined
+
+- name: set heat config path
+  set_fact:
+    nova_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: check if conf file exists
+  stat: path={{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi.conf
+  register: nova_config
+  ignore_errors: true
+
+- block:
+  - name: Determine number of nova processes for httpd
+    shell: grep processes {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: nova_worker_processes
+
+  - name: Determine number of nova threads for httpd
+    shell: grep threads {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: nova_worker_threads
+
+  - name: Set nova httpd worker facts
+    set_fact:
+      stockpile_openstack_heat_workers:
+        processes: "{{ nova_worker_processes.stdout }}"
+        threads: "{{ nova_worker_threads.stdout }}"
+  when: nova_config.stat.exists

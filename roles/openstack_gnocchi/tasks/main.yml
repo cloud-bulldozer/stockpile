@@ -10,3 +10,34 @@
   set_fact:
     stockpile_openstack_gnocchi: "{{ gnocchi_data.stdout }}"
   when: gnocchi_data is succeeded
+
+- name: set gnocchi config path for containers
+  set_fact:
+    gnocchi_config_path={{ config_path }}/gnocchi/etc
+  when: containers is defined
+
+- name: set gnocchi config path
+  set_fact:
+    gnocchi_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: check if conf file exists
+  stat: path={{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi.conf
+  register: gnocchi_config
+  ignore_errors: true
+
+- block:
+  - name: Determine number of gnocchi processes for httpd
+    shell: grep processes {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: gnocchi_worker_processes
+
+  - name: Determine number of gnocchi threads for httpd
+    shell: grep threads {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: gnocchi_worker_threads
+
+  - name: Set gnocchi httpd worker facts
+    set_fact:
+      stockpile_openstack_gnocchi_workers:
+        processes: "{{ gnocchi_worker_processes.stdout }}"
+        threads: "{{ gnocchi_worker_threads.stdout }}"
+  when: gnocchi_config.stat.exists

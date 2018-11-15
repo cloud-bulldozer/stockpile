@@ -10,3 +10,34 @@
   set_fact:
     stockpile_openstack_cinder: "{{ cinder_data.stdout }}"
   when: cinder_data is succeeded
+
+- name: set cinder config path for containers
+  set_fact:
+    cinder_config_path={{ config_path }}/cinder/etc
+  when: containers is defined
+
+- name: set cinder config path
+  set_fact:
+    cinder_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: check if conf file exists
+  stat: path={{ cinder_config_path }}/httpd/conf.d/10-cinder_wsgi.conf
+  register: cinder_config
+  ignore_errors: true
+
+- block:
+  - name: Determine number of cinder processes for httpd
+    shell: grep processes {{ cinder_config_path }}/httpd/conf.d/10-cinder_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: cinder_worker_processes
+
+  - name: Determine number of cinder threads for httpd
+    shell: grep threads {{ cinder_config_path }}/httpd/conf.d/10-cinder_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: cinder_worker_threads
+
+  - name: Set cinder httpd worker facts
+    set_fact:
+      stockpile_openstack_cinder_workers:
+        processes: "{{ cinder_worker_processes.stdout }}"
+        threads: "{{ cinder_worker_threads.stdout }}"
+  when: cinder_config.stat.exists

@@ -26,6 +26,8 @@
     - openstack_mysql
     - openstack_rabbitmq
     - openstack_glance
+    - openstack_swift
+    - openstack_zaqar
     - openstack_undercloud
     - openstack_overcloud
 

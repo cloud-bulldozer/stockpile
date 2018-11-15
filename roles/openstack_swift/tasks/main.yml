@@ -1,0 +1,12 @@
+---
+
+- name: Parse swift config
+  become: true
+  script: ../openstack_common/files/openstack-config-parser.py swift
+  ignore_errors: true
+  register: swift_data
+
+- name: setting fact
+  set_fact:
+    stockpile_openstack_swift: "{{ swift_data.stdout }}"
+  when: swift_data is succeeded

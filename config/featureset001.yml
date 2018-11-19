@@ -1,0 +1,42 @@
+---
+# This config is to collect system specific data for consumers of browbeat.
+# browbeat is mostly used in OSP environment.
+- hosts: overcloud
+  remote_user: "{{ host_remote_user }}"
+  become: true
+  roles:
+    - openstack_common
+    - cpu
+    - cpu_vulnerabilities
+    - kernel-debug
+    - dmidecode
+    - yum_repos
+    - openstack_compute
+    - openstack_nova
+    - openstack_neutron
+    - openstack_keystone
+    - openstack_ceilometer
+    - openstack_gnocchi
+    - openstack_cinder
+    - openstack_heat
+    - openstack_mysql
+    - openstack_rabbitmq
+    - openstack_glance
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  become: true
+  roles:
+    - openstack_common
+    - openstack_undercloud
+    - cpu
+    - cpu_vulnerabilities
+    - kernel-debug
+    - dmidecode
+    - yum_repos
+
+- hosts: stockpile
+  gather_facts: false
+  remote_user: "{{ stockpile_user }}"
+  roles:
+    - dump-facts

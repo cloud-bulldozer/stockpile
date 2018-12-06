@@ -10,3 +10,34 @@
   set_fact:
     stockpile_openstack_heat: "{{ heat_data.stdout }}"
   when: heat_data is succeeded
+
+- name: set heat_api config path for containers
+  set_fact:
+    heat_api_config_path={{ config_path }}/heat_api/etc
+  when: containers is defined
+
+- name: set heat config path
+  set_fact:
+    heat_api_config_path={{ config_path }}
+  when: containers is not defined
+
+- name: check if conf file exists
+  stat: path={{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi.conf
+  register: heat_api_config
+  ignore_errors: true
+
+- block:
+  - name: Determine number of heat_api admin processes for httpd
+    shell: grep processes {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: heat_api_worker_processes
+
+  - name: Determine number of heat_api admin threads for httpd
+    shell: grep threads {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: heat_api_worker_threads
+
+  - name: Set heat_api httpd worker facts
+    set_fact:
+      stockpile_openstack_heat_workers:
+        processes: "{{ heat_api_worker_processes.stdout }}"
+        threads: "{{ heat_api_worker_threads.stdout }}"
+  when: heat_api_config.stat.exists

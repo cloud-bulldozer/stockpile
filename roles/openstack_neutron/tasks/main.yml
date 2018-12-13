@@ -11,15 +11,6 @@
     stockpile_openstack_neutron: "{{ neutron_data.stdout }}"
   when: neutron_data is succeeded
 
-# The next couple of tasks probably need to be in their own role
-- name: Get ovs version
-  shell: ovs-vswitchd --version | grep vSwitch | awk {'print$4'}
-  register: ovs_version
-
-- name: Set ovs version fact
-  set_fact:
-    stockpile_openstack_ovs_version: "{{ ovs_version.stdout }}"
-
 - name: set config path for containers
   set_fact:
     neutron_config_path={{ config_path }}/neutron/etc

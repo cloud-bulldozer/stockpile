@@ -27,6 +27,7 @@
     - openstack_rabbitmq
     - openstack_glance
     - openstack_undercloud
+    - openstack_overcloud
 
 - hosts: stockpile
   gather_facts: false

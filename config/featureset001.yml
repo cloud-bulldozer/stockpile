@@ -11,6 +11,7 @@
     - ../roles/dmidecode
     - ../roles/yum_repos
     - ../roles/openstack_common
+    - ../roles/openstack_overcloud
     - ../roles/openstack_compute
     - ../roles/openstack_ceilometer
     - ../roles/openstack_cinder

@@ -65,3 +65,20 @@
       osp_controllers_number: "{{ controller_count.stdout }}"
       osp_computes_number: "{{ compute_count.stdout }}"
   when: undercloud_data is succeeded and undercloud_conf.stat.exists
+
+- name: Set fact for OpenStack release
+  set_fact:
+    stockpile_osp_undercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
+  ignore_errors: true
+
+- name: Get ovs version
+  shell: ovs-vsctl --version | grep vSwitch | awk {'print$4'}
+  register: ovs_version
+  ignore_errors: true
+
+- name: Set ovs version fact
+  set_fact:
+    stockpile_osp_undercloud_ovs_version: "{{ ovs_version.stdout }}"
+  when: ovs_version.rc == 0
+
+

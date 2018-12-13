@@ -14,3 +14,7 @@
   set_fact:
     config_path: /etc
   when: docker_ps.stdout|int < 2
+
+- name: Set fact for OpenStack release
+  set_fact:
+    stockpile_openstack_release: "{{ lookup('file', '/etc/rhosp-release') }}"

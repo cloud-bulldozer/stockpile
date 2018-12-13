@@ -1,0 +1,13 @@
+- name: Set fact for OpenStack release
+  set_fact:
+    stockpile_osp_uvercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
+  ignore_errors: true
+
+- name: Get ovs version
+  shell: ovs-vsctl --version | grep vSwitch | awk {'print$4'}
+  register: ovs_version
+
+- name: Set ovs version fact
+  set_fact:
+    stockpile_osp_overcloud_ovs_version: "{{ ovs_version.stdout }}"
+

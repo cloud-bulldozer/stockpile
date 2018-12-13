@@ -65,3 +65,46 @@
       osp_controllers_number: "{{ controller_count.stdout }}"
       osp_computes_number: "{{ compute_count.stdout }}"
   when: undercloud_data is succeeded and undercloud_conf.stat.exists
+
+- name: Get ovs version
+  shell: ovs-vsctl --version | grep vSwitch | awk {'print$4'}
+  register: ovs_version
+  ignore_errors: true
+
+- name: Set ovs version fact
+  set_fact:
+    stockpile_osp_undercloud_ovs_version: "{{ ovs_version.stdout }}"
+  when: ovs_version.rc == 0
+
+# Following are currently helpful for RHOSP only
+- name: Get details of stackrc
+  stat:
+    path: "{{ user_homedir.stdout }}/stackrc"
+  register: undercloud_stackrc
+
+- name: Get undercloud install date
+  shell: "{{ undercloud_stackrc.stat.mtime }} | gawk '{print strftime("%c", $0)}'
+  register: undercloud_build_date
+  when: undercloud_stackrc.stat.exists
+
+- name: Set fact for UC install date
+  set_fact:
+    stockpile_rhosp_undercloud_build: "{{ undercloud_build_date.stdout }}"
+  when: undercloud_stackrc.stat.exists
+
+- name: Get the build for openstack version
+  shell: grep "baseurl=" /etc/yum.repos.d/rhos-release-*.repo | head -1 | awk -F\/ '{print$11}'
+  register: rhos_puddle
+  ignore_errors: true
+
+- name: Set fact for RHOSP puddle
+  set_fact:
+    stockpile_rhosp_build: rhos_puddle.stdout
+  when: rhos_puddle is success and rhos_puddle.stdout != ""
+
+- name: Set fact for OpenStack release
+  set_fact:
+    stockpile_rhosp_undercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
+  ignore_errors: true
+
+

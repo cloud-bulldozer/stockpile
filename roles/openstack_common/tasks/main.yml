@@ -14,3 +14,4 @@
   set_fact:
     config_path: /etc
   when: docker_ps.stdout|int < 2
+

@@ -4,11 +4,15 @@
   package:
     name: dmidecode
     state: present
+  register: dmidecode
+  ignore_errors: true
 
 - name: Run dmidecode
   command: dmidecode --quiet
   become: true
   register: dmide_run
+  when: dmidecode.rc == 0
 
 - set_fact:
     stockpile_dmidecode: "{{ dmide_run.stdout }}"
+  when: dmidecode.rc == 0

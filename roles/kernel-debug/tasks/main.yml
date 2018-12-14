@@ -1,7 +1,24 @@
 ---
+- name: Check for x86
+  stat:
+    path: /sys/kernel/debug/x86/
+  register: x86
+
+- name: Check for powerpc
+  stat:
+    path: /sys/kernel/debug/powerpc/
+  register: powerpc
+
 - name: Get the output of all files
   shell: "grep -H '' /sys/kernel/debug/x86/*"
   register: shell_output
+  when: x86.stat.exists
+  ignore_errors: yes
+
+- name: Get the output of all files
+  shell: "grep -sH '' /sys/kernel/debug/powerpc/*"
+  register: shell_output
+  when: powerpc.stat.exists
   ignore_errors: yes
 
 - name: set fact

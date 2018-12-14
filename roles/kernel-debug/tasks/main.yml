@@ -1,11 +1,33 @@
 ---
+- name: Check for x86
+  stat:
+    path: /sys/kernel/debug/x86/
+  register: x86
+
+- name: Check for powerpc
+  stat:
+    path: /sys/kernel/debug/powerpc/
+  register: powerpc
+
 - name: Get the output of all files
   shell: "grep -H '' /sys/kernel/debug/x86/*"
-  register: shell_output
+  register: x86_shell_output
+  when: x86.stat.exists
   ignore_errors: yes
 
-- name: set fact
+- name: Get the output of all files
+  shell: "grep -sH '' /sys/kernel/debug/powerpc/*"
+  register: powerpc_shell_output
+  when: powerpc.stat.exists
+  ignore_errors: yes
+
+- name: set fact for x86
   set_fact:
-    stockpile_kernel_debug: "{{ shell_output.stdout_lines }}"
-  when: shell_output.stdout_lines is defined
+    stockpile_kernel_debug: "{{ x86_shell_output.stdout_lines }}"
+  when: x86_shell_output.stdout_lines is defined and not powerpc.stat.exists
+
+- name: set fact for power
+  set_fact:
+    stockpile_kernel_debug: "{{ powerpc_shell_output.stdout_lines }}"
+  when: powerpc_shell_output.stdout_lines is defined and not x86.stat.exists
 

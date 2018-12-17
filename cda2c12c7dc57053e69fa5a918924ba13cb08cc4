@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1597bec1_ed4b0519",
+        "filename": "roles/openstack_overcloud/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-12-17T15:44:31Z",
+      "side": 1,
+      "message": "\u0027o\u0027",
+      "range": {
+        "startLine": 3,
+        "startChar": 18,
+        "endLine": 3,
+        "endChar": 19
+      },
+      "revId": "cda2c12c7dc57053e69fa5a918924ba13cb08cc4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dff7ecda_5a3a8f63",
+        "filename": "roles/openstack_undercloud/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2018-12-17T15:44:31Z",
+      "side": 1,
+      "message": "can this and ovs_version be added to the stockpile_osp_environment in L64 ? as they are part of environment from what i understand.",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "cda2c12c7dc57053e69fa5a918924ba13cb08cc4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

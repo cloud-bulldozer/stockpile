@@ -45,6 +45,30 @@
       "revId": "cda2c12c7dc57053e69fa5a918924ba13cb08cc4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f7ac542_2841becb",
+        "filename": "roles/openstack_undercloud/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1007728
+      },
+      "writtenOn": "2018-12-17T15:52:49Z",
+      "side": 1,
+      "message": "Sure, but I don\u0027t see why all this naming confusion exists? Why is there osp_controllers_number why can\u0027t it be just controllers_number when it is already nested under stockpile_osp_environment.\n\nAlso, why do you think its part of the environment? I would see it more of a fact linked to that node.",
+      "parentUuid": "dff7ecda_5a3a8f63",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 36
+      },
+      "revId": "cda2c12c7dc57053e69fa5a918924ba13cb08cc4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }

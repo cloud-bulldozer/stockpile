@@ -1,0 +1,6 @@
+parseable: true
+quiet: true
+skip_list:
+  - skip_ansible_lint
+use_default_rules: true
+verbosity: 1

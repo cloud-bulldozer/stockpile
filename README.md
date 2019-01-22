@@ -46,6 +46,12 @@ Tool to gather information from systems using Ansible.
     You should type a small justification of what you are
     changing and why.
 
+    Please try to run linters before you submit for review, as this would
+    enable reviewers to focus mainly on logic and not syntax.
+    ::
+
+        $ tox .
+
     Now you're ready to submit your changes for review:
 
     ::

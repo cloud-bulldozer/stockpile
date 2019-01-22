@@ -28,11 +28,15 @@
 
 - block:
   - name: Determine number of heat_api admin processes for httpd
-    shell: grep processes {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    shell: >
+      grep processes {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf |
+      awk '{print $5}'| awk -F= '{print $2}'
     register: heat_api_worker_processes
 
   - name: Determine number of heat_api admin threads for httpd
-    shell: grep threads {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ heat_api_config_path }}/httpd/conf.d/10-heat_api_wsgi_admin.conf |
+      awk '{print $6}'| awk -F= '{print $2}'
     register: heat_api_worker_threads
 
   - name: Set heat_api httpd worker facts

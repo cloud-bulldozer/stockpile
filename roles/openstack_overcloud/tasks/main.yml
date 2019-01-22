@@ -7,9 +7,9 @@
   shell: ovs-vsctl --version | grep vSwitch | awk {'print$4'}
   register: ovs_version
   ignore_errors: true
+  changed_when: false
 
 - name: Set ovs version fact
   set_fact:
     stockpile_osp_overcloud_ovs_version: "{{ ovs_version.stdout }}"
   when: ovs_version.rc == 0
-

@@ -20,19 +20,26 @@
   set_fact:
     neutron_config_path={{ config_path }}
   when: containers is not defined
+  
+- name: Check for file openvswitch_agent.ini
+  stat:
+    path: "{{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini"
+  register: ovsagent_file
 
 - name: Get neutron ovs agent ovsdb setting
-  shell: crudini --get {{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
+  command: crudini --get {{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
   register: ovsdb_status
   ignore_errors: true
   become: true
+  changed_when: false
+  when: ovsagent_file.stat.exists
 
 - name: Set Neutron OVS ovsdb fact
   set_fact:
     stockpile_openstack_neutron_ovsdb: "{{ ovsdb_status.stdout }}"
-  when: (ovsdb_status.stdout.find('native') != -1 or ovsdb_status.stdout.find('vsctl') != -1)
+  when: ovsdb_status is success and ovsagent_file.stat.exists
 
-- name: Set Neutron OVS ovsdb fact
+- name: Set Neutron OVS ovsdb fact when file exists and option is missing
   set_fact:
-    stockpile_openstack_neutron_ovsdb: "vsctl"
-  when: (ovsdb_status.stdout.find('native') == -1 and ovsdb_status.stdout.find('vsctl') == -1)
+    stockpile_openstack_neutron_ovsdb: "native"
+  when: ovsdb_status.rc == 1 and ovsagent_file.stat.exists

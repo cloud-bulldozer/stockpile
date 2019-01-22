@@ -44,19 +44,27 @@
 
 - block:
   - name: Determine number of keystone admin processes for httpd
-    shell: grep processes {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    shell: >
+      grep processes {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf |
+      awk '{print $5}'| awk -F= '{print $2}'
     register: keystone_admin_worker_processes
 
   - name: Determine number of keystone admin threads for httpd
-    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_admin.conf |
+      awk '{print $6}'| awk -F= '{print $2}'
     register: keystone_admin_worker_threads
 
   - name: Determine number of keystone main threads for httpd
-    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $6}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf |
+      awk '{print $6}'| awk -F= '{print $2}'
     register: keystone_main_worker_threads
 
   - name: Determine number of keystone main processes for httpd
-    shell: grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $5}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ keystone_config_path }}/httpd/conf.d/10-keystone_wsgi_main.conf |
+      awk '{print $5}'| awk -F= '{print $2}'
     register: keystone_main_worker_processes
 
   - name: Set keystone httpd worker facts

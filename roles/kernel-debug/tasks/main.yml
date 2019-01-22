@@ -1,6 +1,7 @@
 ---
 - name: Get the output of all files
-  shell: "grep -H '' /sys/kernel/debug/x86/*"
+  command: grep -H '' /sys/kernel/debug/x86/*
+  changed_when: false
   register: shell_output
   ignore_errors: yes
 
@@ -8,4 +9,3 @@
   set_fact:
     stockpile_kernel_debug: "{{ shell_output.stdout_lines }}"
   when: shell_output.stdout_lines is defined
-

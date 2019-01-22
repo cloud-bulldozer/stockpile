@@ -6,6 +6,7 @@
 - name: Get user's home directory
   shell: "getent passwd {{ ansible_user }} | cut -d: -f6"
   register: user_homedir
+  changed_when: false
 
 # ansible_env.HOME should've worked here
 - name: Check that undercloud is installed
@@ -70,6 +71,7 @@
   shell: ovs-vsctl --version | grep vSwitch | awk {'print$4'}
   register: ovs_version
   ignore_errors: true
+  changed_when: false
 
 - name: Set ovs version fact
   set_fact:
@@ -96,6 +98,7 @@
   shell: grep "baseurl=" /etc/yum.repos.d/rhos-release-*.repo | head -1 | awk -F\/ '{print$11}'
   register: rhos_puddle
   ignore_errors: true
+  changed_when: false
 
 - name: Set fact for RHOSP puddle
   set_fact:
@@ -106,5 +109,3 @@
   set_fact:
     stockpile_rhosp_undercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
   ignore_errors: true
-
-

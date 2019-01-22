@@ -8,7 +8,9 @@
 - name: Run dmidecode
   command: dmidecode --quiet
   become: true
+  changed_when: false
   register: dmide_run
 
-- set_fact:
+- name: storing dmidecode output
+  set_fact:
     stockpile_dmidecode: "{{ dmide_run.stdout }}"

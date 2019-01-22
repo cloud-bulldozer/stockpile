@@ -29,6 +29,7 @@
   shell: cat /proc/$(pgrep mysqld_safe)/limits | grep "open files" | awk '{print $4}'
   register: mysql_desc
   ignore_errors: true
+  changed_when: false
 
 - name: set file descriptors
   set_fact:

@@ -1,8 +1,9 @@
 ---
 - name: check if yum is present
-  shell: python -c "import yum"
+  command: python -c "import yum"
   register: yum_installed
   ignore_errors: yes
+  changed_when: false
 
 - block:
     - name: collect yum repos
@@ -10,6 +11,7 @@
         list: repos
       register: yum_repos
 
-    - set_fact:
+    - name: Storing the results
+      set_fact:
         stockpile_yum_repos: "{{ yum_repos.results }}"
   when: yum_installed.rc == 0

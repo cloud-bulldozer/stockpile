@@ -3,6 +3,7 @@
 - name: Determine if docker is running
   shell: docker ps | wc -l
   register: docker_ps
+  changed_when: false
 
 - name: Set var for container deployment
   set_fact:
@@ -14,4 +15,3 @@
   set_fact:
     config_path: /etc
   when: docker_ps.stdout|int < 2
-

@@ -22,10 +22,11 @@
   when: containers is not defined
 
 - name: Get neutron ovs agent ovsdb setting
-  shell: crudini --get {{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
+  command: crudini --get {{ neutron_config_path }}/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
   register: ovsdb_status
   ignore_errors: true
   become: true
+  changed_when: false
 
 - name: Set Neutron OVS ovsdb fact
   set_fact:

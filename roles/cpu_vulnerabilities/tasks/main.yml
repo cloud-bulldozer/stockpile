@@ -1,9 +1,10 @@
 ---
 
 - name: read line by line each vulnerability
-  shell: "grep -H '' /sys/devices/system/cpu/vulnerabilities/*"
+  command: grep -H '' /sys/devices/system/cpu/vulnerabilities/*
   register: vulnerabilities_output
   ignore_errors: yes
+  changed_when: false
 
 - name: set the collected cpu vulnerabilities info as facts
   set_fact:

@@ -28,11 +28,15 @@
 
 - block:
   - name: Determine number of nova processes for httpd
-    shell: grep processes {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    shell: >
+      grep processes {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf |
+      awk '{print $5}'| awk -F= '{print $2}'
     register: nova_worker_processes
 
   - name: Determine number of nova threads for httpd
-    shell: grep threads {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ nova_config_path }}/httpd/conf.d/10-nova_api_wsgi_admin.conf |
+      awk '{print $6}'| awk -F= '{print $2}'
     register: nova_worker_threads
 
   - name: Set nova httpd worker facts

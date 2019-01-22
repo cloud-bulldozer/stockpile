@@ -28,11 +28,15 @@
 
 - block:
   - name: Determine number of gnocchi processes for httpd
-    shell: grep processes {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    shell: >
+      grep processes {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf |
+      awk '{print $5}'| awk -F= '{print $2}'
     register: gnocchi_worker_processes
 
   - name: Determine number of gnocchi threads for httpd
-    shell: grep threads {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    shell: >
+      grep threads {{ gnocchi_config_path }}/httpd/conf.d/10-gnocchi_wsgi_admin.conf |
+      awk '{print $6}'| awk -F= '{print $2}'
     register: gnocchi_worker_threads
 
   - name: Set gnocchi httpd worker facts

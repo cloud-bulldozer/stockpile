@@ -1,8 +1,9 @@
 ---
 - name: check if oc client is installed
-  shell: which oc
+  command: which oc
   register: oc_installed
   ignore_errors: yes
+  changed_when: false
 
 - name: check if kubeconfig exists
   stat:
@@ -11,26 +12,32 @@
 
 - name: print debug msg if oc client or kubeconfig doesn't exist
   debug:
-    msg: Skipping the ocp collection, cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config" or oc client is not installed, please check.
-  when: ( oc_installed.rc != 0 or kubeconfig.stat.exists == False )
+    msg: >
+      Skipping the ocp collection, cannot find kubeconfig at
+      "{{ ansible_env.HOME }}/.kube/config" or oc client is not installed, please check.
+  when: ( oc_installed.rc != 0 or not kubeconfig.stat.exists )
 
 - block:
     - name: get pods in all namespaces
-      shell: oc get pods --all-namespaces -o json
+      command: oc get pods --all-namespaces -o json
       register: ocp_running_pods
 
     - name: get openshift app node count
       shell:  oc get nodes -l node-role.kubernetes.io/compute=true | grep -w "Ready" | wc -l
       register: ocp_compute_count
+      tags:
+        - skip_ansible_lint
 
     - name: openshift masters and etcd count assuming that masters are etcd are co-located
       shell: oc get nodes -l node-role.kubernetes.io/master=true | grep -w "Ready" | wc -l
       register: ocp_master_count
+      tags:
+        - skip_ansible_lint
 
     - name: ocp cluster network
-      shell: oc get clusternetwork -o json
+      command: oc get clusternetwork -o json
       register: ocp_network_plugin
-    
+
     - name: oc client version
       shell: oc version | grep -w oc | cut -d ' ' -f2
       register: oc_client_version
@@ -44,11 +51,15 @@
       register: kube_server_version
 
     - name: openshift user
-      shell: oc whoami
+      command: oc whoami
       register: ocp_user
+      changed_when: false
 
     - name: infra pods
-      shell: for infra_node in $(oc get nodes -l node-role.kubernetes.io/infra=true | awk 'NR>1 {print $1}' ); do oc get pods --all-namespaces --field-selector spec.nodeName=$infra_node -o wide | awk 'NR>1 {print $2}'; done
+      shell: >
+        for infra_node in $(oc get nodes -l node-role.kubernetes.io/infra=true |
+        awk 'NR>1 {print $1}' ); do oc get pods --all-namespaces --field-selector
+        spec.nodeName=$infra_node -o wide | awk 'NR>1 {print $2}'; done
       register: ocp_infra_pods
 
     - name: get the system pod names in crashloop state
@@ -56,32 +67,32 @@
       register: ocp_failed_pods
 
     - name: get the components status
-      shell: oc get cs -o json
+      command: oc get cs -o json
       register: ocp_components_status
 
     - name: services
-      shell: oc get svc --all-namespaces -o json
+      command: oc get svc --all-namespaces -o json
       register: ocp_svc
 
     - name: services accounts
-      shell: oc get sa --all-namespaces -o json
+      command: oc get sa --all-namespaces -o json
       register: ocp_sa
 
     - name: security contxt constraints
-      shell: oc get scc --all-namespaces -o json
+      command: oc get scc --all-namespaces -o json
       register: ocp_scc
-    
+
     - name: persistent volumes
-      shell: oc get pv --all-namespaces -o json
+      command: oc get pv --all-namespaces -o json
       register: ocp_pv
 
     - name: persistent volume claims
-      shell: oc get pvc --all-namespaces -o json
+      command: oc get pvc --all-namespaces -o json
       register: ocp_pvc
 
     - name: openshift compute node config
       script: openshift_config_scraper.py node-config-compute
-      register: ocp_compute_configmap 
+      register: ocp_compute_configmap
 
     - name: openshift master node config
       script: openshift_config_scraper.py node-config-master
@@ -119,4 +130,6 @@
           node_config_master: "{{ ocp_master_configmap.stdout }}"
           node_config_infra: "{{ ocp_infra_configmap.stdout }}"
           web_console_config: "{{ ocp_webconsole_configmap.stdout }}"
-  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists == True ) 
+  when:
+    - oc_installed.rc == 0
+    - kubeconfig.stat.exists

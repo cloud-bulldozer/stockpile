@@ -10,5 +10,6 @@
   become: true
   register: dmide_run
 
-- set_fact:
+- name: Storing the output of dmidecode
+  set_fact:
     stockpile_dmidecode: "{{ dmide_run.stdout }}"

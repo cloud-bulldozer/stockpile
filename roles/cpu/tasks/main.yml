@@ -1,12 +1,12 @@
 ---
 
 - name: check for lscpu
-  shell: which lscpu
+  command: which lscpu
   register: lscpu_installed
   ignore_errors: yes
 
 - name: capture lscpu
-  shell: lscpu
+  command: lscpu
   register: lscpu_info
   when: lscpu_installed.rc == 0
 

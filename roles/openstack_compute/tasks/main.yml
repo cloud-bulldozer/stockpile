@@ -1,5 +1,5 @@
 ---
-  
+
 - name: Check for Nested Virtualization
   shell: cat /proc/cpuinfo | grep hypervisor
   register: nested_virt

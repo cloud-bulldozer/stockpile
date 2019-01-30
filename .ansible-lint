@@ -1,18 +1,10 @@
 ---
 parseable: true
 skip_list:
-  - '102'  # [E102] No Jinja2 in when
-  - '103'  # [E103] Deprecated sudo feature
-  - '201'  # [E201] Trailing whitespace
   - '204'  # [E204] Lines should be no longer than 120 chars
-  - '206'  # [E206] Variables should have spaces before and after: {{ var_name }}
   - '301'  # [E301] Commands should not change things if nothing needs doing
   - '303'  # [E303] systemctl used in place of systemd module
-  - '305'  # [E305] Use shell only when shell functionality is required
   - '405'
-  - '502'  # [E502] All tasks should be named
   - '503'  # [E503] Tasks that run when changed should likely be handlers
-  - '504'
-  - '601'  # [E601] Don't compare to literal True/False
   - '602'  # [E602] Don't compare to empty string
 use_default_rules: true

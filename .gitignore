@@ -1,15 +1,17 @@
-# Ignore metadata
-metadata/*.json
+# Distribution / packaging
+*.egg*
+build/
+dist/
 
-# Ansible
+# Testing
+.cache
+.tox
+
+# Virtual Environments:
+
+# Ansible files
 *.retry
-hosts.*
 
-# OS junk
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Prevent hosts files from sneaking into the git repo
+hosts
+

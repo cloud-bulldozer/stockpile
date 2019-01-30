@@ -169,7 +169,7 @@ def main():
     if output == {}:
         sys.exit("nothing found")
         return 1
-    print output
+    print(output)
     return 0
 
 if __name__ == '__main__':

@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d37d0c2_68605521",
+        "filename": "roles/dmidecode/tasks/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1007962
+      },
+      "writtenOn": "2019-02-12T16:27:50Z",
+      "side": 1,
+      "message": "Maybe a more description name like: \"fact_dmidecode\"?",
+      "revId": "9f53c5b38f1f17caae63d62dbe37323263de160b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2e5583e_feba6527",
+        "filename": "roles/openshift-cluster-topology/tasks/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1007962
+      },
+      "writtenOn": "2019-02-12T16:27:50Z",
+      "side": 1,
+      "message": "It seems like whitespace is a concern when using \"{{ }}\" pairs, is the same true for the removal of the space between \"exists\" and \")\" at the end?",
+      "revId": "9f53c5b38f1f17caae63d62dbe37323263de160b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94c90c24_29a55e58",
+        "filename": "roles/yum_repos/tasks/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1007962
+      },
+      "writtenOn": "2019-02-12T16:27:50Z",
+      "side": 1,
+      "message": "Perhaps consider using the name, \"fact_yum_repos\"?",
+      "revId": "9f53c5b38f1f17caae63d62dbe37323263de160b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}

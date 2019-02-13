@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "284f4f77_99ce99a0",
+        "filename": "roles/openshift-cluster-topology/tasks/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1014939
+      },
+      "writtenOn": "2019-02-13T04:41:22Z",
+      "side": 1,
+      "message": "No, I had just missed it.",
+      "parentUuid": "c2e5583e_feba6527",
+      "revId": "9f53c5b38f1f17caae63d62dbe37323263de160b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "94c90c24_29a55e58",
         "filename": "roles/yum_repos/tasks/main.yml",
         "patchSetId": 2

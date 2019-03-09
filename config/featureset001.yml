@@ -38,8 +38,8 @@
     - ../roles/openstack_mistral
     - ../roles/openstack_mysql
 
-- hosts: stockpile
+- hosts: localhost
   gather_facts: false
-  remote_user: "{{ stockpile_user }}"
+  connection: local
   roles:
     - ../roles/dump-facts

@@ -1,0 +1,18 @@
+---
+# This config is to collect system specific data for consumers of ripsaw.
+# ripsaw is a k8s operator used in kubernetes environment to run workloads.
+# you can check out https://github.com/cloud-bulldozer/honeybadger
+
+- hosts: jumphost
+  remote_user: "root"
+  become: true
+  roles:
+    - ../roles/k8s_cluster_resources
+    - ../roles/k8s_cluster_contexts
+
+- hosts: stockpile
+  gather_facts: false
+  remote_user: "{{ stockpile_user }}"
+  become: true
+  roles:
+    - ../roles/dump-facts

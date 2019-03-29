@@ -1,0 +1,16 @@
+---
+  - name: check node
+    command: kubectl cluster-info
+    register: cluster_status
+    ignore_errors: true
+
+  - block:
+      - name: List resources
+        command: kubectl config view
+        register: list_contexts
+
+      - name: Store resources
+        set_fact:
+          stockpile_k8s_cluster_contexts: "{{ k8s_cluster_contexts | to_nice_json}}"
+    when: cluster_status is succeeded
+    ignore_errors: true

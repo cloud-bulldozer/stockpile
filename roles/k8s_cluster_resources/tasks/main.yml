@@ -1,0 +1,26 @@
+---
+  - name: check node
+    command: kubectl cluster-info
+    register: cluster_status
+    ignore_errors: true
+
+  - block:
+      - name: List resources
+        command: kubectl api-resources --verbs=get -o name
+        register: list_resources
+
+      - name: Get all cluster resources
+        command: kubectl get {{ item }} --all-namespaces -o json
+        with_items: "{{ list_resources.stdout_lines }}"
+        register: cluster_resources
+
+      - name: Build the resources dictionary
+        set_fact:
+          k8s_cluster_resources: "{{ k8s_cluster_resources|default({}) | combine( {item.item: item.stdout|from_json} ) }}"
+        with_items: "{{ cluster_resources.results }}"
+
+      - name: Store resources
+        set_fact:
+          stockpile_k8s_cluster_resources: "{{ k8s_cluster_resources | to_nice_json}}"
+    when: cluster_status is succeeded
+    ignore_errors: true

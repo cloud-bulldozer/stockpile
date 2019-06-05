@@ -1,4 +1,15 @@
-#!/usr/bin/env python
+#!/bin/bash
+
+''':'
+vers=( /usr/bin/python[2-3] )
+latest="${vers[$((${#vers[@]} - 1))]}"
+if !(ls $latest &>/dev/null); then
+    echo "no python present"
+    exit 1
+fi
+cat <<'# EOF' | exec $latest - "$@"
+''' #'''
+
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
@@ -22,8 +33,8 @@ def run_cmd(cmd):
                                stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     output_dict = {}
-    output_dict['stdout'] = stdout.strip()
-    output_dict['stderr'] = stderr.strip()
+    output_dict['stdout'] = stdout.decode('utf-8').strip()
+    output_dict['stderr'] = stderr.decode('utf-8').strip()
     output_dict['rc'] = process.returncode
     return output_dict
 
@@ -174,3 +185,5 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
+# EOF

@@ -12,7 +12,7 @@
   when: rabbitmq_desc is succeeded and containers is not defined and rabbitmq_desc.stdout != ""
 
 - name : Get rabbitmq file descriptors - containers
-  shell: docker exec rabbitmq rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'
+  shell: "{{ container_cli }} exec rabbitmq rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'"
   register: rabbitmq_desc
   ignore_errors: true
   when: containers is defined

@@ -18,7 +18,13 @@
   shell: docker exec mysql cat /etc/my.cnf.d/galera.cnf| grep max_connections | awk -F ' = ' '{print $2}'
   register: max_conn
   ignore_errors: true
-  when: containers is defined
+  when: containers is defined and ansible_distribution_major_version == '7'
+
+- name: Get max_connections on the database
+  shell: sudo podman exec mysql cat /etc/my.cnf.d/galera.cnf| grep max_connections | awk -F ' = ' '{print $2}'
+  register: max_conn
+  ignore_errors: true
+  when: containers is defined and ansible_distribution_major_version = '8'
 
 - name: Set max database connections
   set_fact:

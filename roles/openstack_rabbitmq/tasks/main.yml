@@ -15,7 +15,14 @@
   shell: docker exec rabbitmq rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'
   register: rabbitmq_desc
   ignore_errors: true
-  when: containers is defined
+  when: containers is defined and ansible_distribution_major_version == '7'
+
+- name : Get rabbitmq file descriptors - containers
+  shell: sudo podman exec rabbitmq rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'
+  register: rabbitmq_desc
+  ignore_errors: true
+  when: containers is defined and ansible_distribution_major_version == '8'
+
 
 - name: Set rabbitmq file descriptors
   set_fact:

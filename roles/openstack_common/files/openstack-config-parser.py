@@ -105,12 +105,20 @@ def print_vars_file(values, fileName):
         for key in values:
             output.write(key + ": " + try_type(values[key]) + "\n")
 
-def is_containerized(service_name):
+def is_dockerized(service_name):
     out = run_cmd("docker ps")
     if service_name in out['stdout']:
         return True
     else:
         return False
+
+def is_podmanized(service_name):
+    out = run_cmd("sudo podman ps")
+    if service_name in out['stdout']:
+        return True
+    else:
+        return False
+
 
 def get_configs_list(path, extension='.conf'):
     configs = []
@@ -144,12 +152,12 @@ def main():
     # This is a list of services that require exceptions from the usual
     # pattern when gathering their config files
     pattern_exceptions = ['glance']
-    in_container = is_containerized(service_name)
-
+    in_docker = is_dockerized(service_name)
+    in_podman = is_podmanized(service_name)
 
     if 'undercloud' in service_name:
         cfg_path = "/home/stack"
-    elif in_container and service_name not in pattern_exceptions:
+    elif in_docker or in_podman and service_name not in pattern_exceptions:
         cfg_path = "/var/lib/config-data/puppet-generated/{}/etc/{}".format(
             service_name, service_name)
     # Glance has all configs in a folder named glance_api, ps shows no
@@ -159,7 +167,7 @@ def main():
     # agopi 10/30/18, this doesn't always seem to be the case for at least
     # downstream OSP13 environment i work with, but leaving it as is to ensure
     # it's not gonna fail in some scenarios.
-    elif in_container and 'glance' in service_name:
+    elif in_docker or in_podman and 'glance' in service_name:
         cfg_path = "/var/lib/config-data/glance_api/etc/glance"
     else:
         cfg_path = "/etc/{}".format(service_name)

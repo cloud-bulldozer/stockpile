@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "db3a0d13_3d8e80b0",
+        "filename": "roles/openstack_common/files/openstack-config-parser.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "f3955456_29e3a69f",
+      "range": {
+        "startLine": 170,
+        "startChar": 9,
+        "endLine": 170,
+        "endChar": 21
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d42149e2_e3793139",
         "filename": "roles/openstack_common/tasks/main.yml",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-06-12T19:15:34Z",
       "side": 1,
       "message": "This check will fail for fedora. Add check to look at distribution as well and then if its of redhat then check for major version.",
+      "range": {
+        "startLine": 6,
+        "startChar": 8,
+        "endLine": 6,
+        "endChar": 49
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d67e6dc9_0b152c8a",
+        "filename": "roles/openstack_common/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d42149e2_e3793139",
       "range": {
         "startLine": 6,
         "startChar": 8,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d931b6af_7a15fd2a",
+        "filename": "roles/openstack_common/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "16b53569_d3234386",
+      "range": {
+        "startLine": 8,
+        "startChar": 21,
+        "endLine": 8,
+        "endChar": 28
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7c39bf45_32d10b0c",
         "filename": "roles/openstack_common/tasks/main.yml",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2019-06-12T19:15:34Z",
       "side": 1,
       "message": "This check will fail for fedora. Add check to look at distribution as well and then if its of redhat then check for major version.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 49
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b2f41632_7bd3a19f",
+        "filename": "roles/openstack_common/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c39bf45_32d10b0c",
       "range": {
         "startLine": 11,
         "startChar": 0,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "63ba261f_a627ea2f",
+        "filename": "roles/openstack_mysql/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "529a0bda_371db40e",
+      "range": {
+        "startLine": 21,
+        "startChar": 30,
+        "endLine": 21,
+        "endChar": 75
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e312995e_254d6f2c",
         "filename": "roles/openstack_mysql/tasks/main.yml",
         "patchSetId": 1
@@ -128,6 +248,30 @@
       "writtenOn": "2019-06-12T19:15:34Z",
       "side": 1,
       "message": "This check will fail for fedora. Add check to look at distribution as well and then if its of redhat then check for major version.",
+      "range": {
+        "startLine": 27,
+        "startChar": 34,
+        "endLine": 27,
+        "endChar": 74
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c46017e6_6b835fb9",
+        "filename": "roles/openstack_mysql/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e312995e_254d6f2c",
       "range": {
         "startLine": 27,
         "startChar": 34,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "65a0f5e2_73c6b45f",
+        "filename": "roles/openstack_rabbitmq/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8deca8bf_ac269118",
+      "range": {
+        "startLine": 18,
+        "startChar": 34,
+        "endLine": 18,
+        "endChar": 75
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "275a3124_3ae37450",
         "filename": "roles/openstack_rabbitmq/tasks/main.yml",
         "patchSetId": 1
@@ -174,6 +342,30 @@
       "writtenOn": "2019-06-12T19:15:34Z",
       "side": 1,
       "message": "This check will fail for fedora. Add check to look at distribution as well and then if its of redhat then check for major version.",
+      "range": {
+        "startLine": 24,
+        "startChar": 34,
+        "endLine": 24,
+        "endChar": 75
+      },
+      "revId": "6ab591a9f82a45ae60623a6efe883b8f7f08d064",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "31df512f_fc9d840f",
+        "filename": "roles/openstack_rabbitmq/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1014634
+      },
+      "writtenOn": "2019-06-21T15:52:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "275a3124_3ae37450",
       "range": {
         "startLine": 24,
         "startChar": 34,

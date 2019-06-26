@@ -1,0 +1,41 @@
+---
+- name: check if oc client is installed
+  command: which oc
+  register: oc_installed
+  ignore_errors: yes
+
+- name: check if kubeconfig exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.kube/config"
+  register: kubeconfig
+
+- name: print debug msg if oc client or kubeconfig doesn't exist
+  debug:
+    msg: Skipping the ocp collection, cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config" or oc client is not installed, please check.
+  when: ( oc_installed.rc != 0 or not kubeconfig.stat.exists )
+
+- block:
+    - name: get events in all namespaces
+      command: oc get ev --sort-by='.lastTimestamp' --all-namespaces -o json
+      register: ocp_get_events_all_namespaces
+
+    - name: get openshift nodes
+      shell: oc get nodes -o wide -o json
+      register: ocp_get_nodes_wide
+
+    - name: get openshift nodes with labels
+      shell: oc get nodes -o wide --show-labels
+      register: ocp_get_nodes_labels
+
+    - name: describe openshift nodes
+      shell: oc describe nodes
+      register: ocp_describe_nodes
+
+    - name: set the collected info as facts
+      set_fact:
+        stockpile_openshift_cluster_topology:
+          events: "{{ ocp_get_events_all_namespaces.stdout }}"
+          nodes: "{{ ocp_get_nodes_wide.stdout }}"
+          nodes_with_labels: "{{ ocp_get_nodes_labels.stdout }}"
+          nodes_describe: "{{ ocp_describe_nodes.stdout }}"
+  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists )

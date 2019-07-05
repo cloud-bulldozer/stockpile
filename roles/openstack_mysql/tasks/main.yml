@@ -15,7 +15,7 @@
 # at least RHOSP13 uses mariadb so will need changes
 # NEEDS TO BE FIXED
 - name: Get max_connections on the database
-  shell: docker exec mysql cat /etc/my.cnf.d/galera.cnf| grep max_connections | awk -F ' = ' '{print $2}'
+  shell: "{{ container_cli }} exec mysql cat /etc/my.cnf.d/galera.cnf| grep max_connections | awk -F ' = ' '{print $2}'"
   register: max_conn
   ignore_errors: true
   when: containers is defined

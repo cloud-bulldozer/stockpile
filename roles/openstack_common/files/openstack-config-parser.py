@@ -106,8 +106,12 @@ def print_vars_file(values, fileName):
             output.write(key + ": " + try_type(values[key]) + "\n")
 
 def is_containerized(service_name):
-    out = run_cmd("docker ps")
-    if service_name in out['stdout']:
+    docker_out = run_cmd("docker ps")
+    podman_out = run_cmd("podman ps")
+
+    if service_name in docker_out['stdout']:
+        return True
+    elif service_name in podman_out['stdout']:
         return True
     else:
         return False

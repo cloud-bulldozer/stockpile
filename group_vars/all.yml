@@ -4,4 +4,4 @@ stockpile_user: user
 local_remote_user: user
 host_remote_user: user
 stockpile_output_path: /tmp/stockpile.json
-
+container_cli: docker

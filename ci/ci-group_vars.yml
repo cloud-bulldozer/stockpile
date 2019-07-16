@@ -6,3 +6,5 @@ host_remote_user: root
 
 home_dir: "{{ ansible_env.HOME }}"
 stockpile_path: "/opt/stockpile"
+
+container_cli: docker

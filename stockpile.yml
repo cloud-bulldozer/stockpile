@@ -28,6 +28,8 @@
     - openstack_glance
     - openstack_undercloud
     - openstack_overcloud
+    - k8s_cluster_resources
+    - k8s_cluster_contexts
 
 - hosts: stockpile
   gather_facts: false

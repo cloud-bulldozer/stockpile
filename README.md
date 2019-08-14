@@ -2,137 +2,71 @@
 Tool to gather information from systems using Ansible.
 
 # Contributing
+## Submitting a PR
+Now, clone the github repository
 
-    Please visit http://gerrithub.io/ and Sign In with your github account.
-    Make sure to import your ssh keys.
+```bash
+$ git clone https://github.com/redhat-performance/stockpile.git
+```
 
-    Now, clone the github repository
+Create a branch
+```bash
+$ git branch my_special_enhancement
+$ git checkout !$
+```
 
-    ::
+Make your changes and then commit them using the instructions below.
+```bash
+$ git add /path/to/files/changed
+$ git commit -m "your commit title"
+```
+Use a descriptive commit title followed by an empty space.
+You should type a small justification of what you are
+changing and why.
+    
+Then submit a PR through UI
+    
+## Local testing
 
-        $ git clone https://github.com/redhat-performance/stockpile.git
+Before submitting code, you *should* do at least some minimal local
+testing, like running ``tox -e linters``. This could be automated if you
+activate `pre-commit <https://pre-commit.com/>`__ hooks
 
-    Make sure, you've git-review installed, following should work.
+```bash
+$ pip install --user pre-commit
+# to enable automatic run on commit:
+$ pre-commit install --install-hooks
+# to uninstall hooks
+$ pre-commit uninstall
+```
+Please note that the pre-commit feature is available only on repositories that
+do have `.pre-commit-config.yaml <https://github.com/redhat-performance/stockpile/blob/master/.pre-commit-config.yaml>`__ file.
 
+Running ``tox -e linters`` is recommended as it may include additional linting
+commands than just pre-commit. So, if you run tox you don't need to run
+pre-commit manually.
 
-    ::
+Implementation of pre-commit is very fast and saves a lot of disk space
+because internally it does cache any linter-version and reuses it between
+repositories, as opposed to tox which uses environments unique to each
+repository (usually more than one). Also by design pre-commit always pins
+linters, making less like to break code because linter released new version.
 
-        $ sudo pip install git-review
+Another reason why pre-commit is very fast is because it runs only
+on modified files. You can force it to run on the entire repository via
+`pre-commit run -a` command.
 
+Upgrading linters is done via ``pre-commit autoupdate`` but this should be
+done only as a separate change request.
 
-    To set up your cloned repository to work with Gerrit
+If you want to make another patchset from the same commit you can
+use the amend feature after further modification and saving.
 
-    ::
-
-        $ git review -s
-
-    It's suggested to create a branch to do your work,
-    name it something related to the change you'd like to introduce.
-
-    ::
-
-        $ git branch my_special_enhancement
-        $ git checkout !$
-
-    Make your changes and then commit them using the instructions
-    below.
-
-    ::
-
-        $ git add /path/to/files/changed
-        $ git commit -m "your commit title"
-
-    Use a descriptive commit title followed by an empty space.
-    You should type a small justification of what you are
-    changing and why.
-
-Local testing
-`````````````
-
-    Before submitting code to Gerrit you *should* do at least some minimal local
-    testing, like running ``tox -e linters``. This could be automated if you
-    activate `pre-commit <https://pre-commit.com/>`__ hooks::
-
-    pip install --user pre-commit
-    # to enable automatic run on commit:
-    pre-commit install --install-hooks
-    # to uninstall hooks
-    pre-commit uninstall
-
-    Please note that the pre-commit feature is available only on repositories that
-    do have `.pre-commit-config.yaml <https://github.com/redhat-performance/stockpile/blob/master/.pre-commit-config.yaml>`__ file.
-
-    Running ``tox -e linters`` is recommended as it may include additional linting
-    commands than just pre-commit. So, if you run tox you don't need to run
-    pre-commit manually.
-
-    Implementation of pre-commit is very fast and saves a lot of disk space
-    because internally it does cache any linter-version and reuses it between
-    repositories, as opposed to tox which uses environments unique to each
-    repository (usually more than one). Also by design pre-commit always pins
-    linters, making less like to break code because linter released new version.
-
-    Another reason why pre-commit is very fast is because it runs only
-    on modified files. You can force it to run on the entire repository via
-    `pre-commit run -a` command.
-
-    Upgrading linters is done via ``pre-commit autoupdate`` but this should be
-    done only as a separate change request.
-
-    Now you're ready to submit your changes for review:
-
-    ::
-
-        $ git review
-
-
-    If you want to make another patchset from the same commit you can
-    use the amend feature after further modification and saving.
-
-    ::
-
-        $ git add /path/to/files/changed
-        $ git commit --amend
-        $ git review
-
-    If you want to submit a new patchset from a different location
-    (perhaps on a different machine or computer for example) you can
-    clone the repo again (if it doesn't already exist) and then
-    use git review against your unique Change-ID:
-
-    ::
-
-        $ git review -d Change-Id
-
-    Change-Id is the change id number as seen in Gerrit and will be
-    generated after your first successful submission. So, in case of
-    https://review.gerrithub.io/#/c/redhat-performance/scribe/+/425014/
-
-    You can either do git review -d 425014 as it's the number
-
-    or you can do git review -d If0b7b4f30615e46f009759b32a3fc533e811ebdc
-    where If0b7b4f30615e46f009759b32a3fc533e811ebdc is the change-id present
-
-    Make the changes on the branch that was setup by using the git review -d
-    (the name of the branch is along the lines of
-    review/username/branch_name/patchsetnumber).
-
-    Add the files to git and commit your changes using,
-
-    ::
-
-        $ git commit --amend
-
-    You can edit your commit message as well in the prompt shown upon
-    executing above command.
-
-    Finally, push the patch for review using,
-
-    ::
-
-        $ git review
-
-
+```bash
+$ git add /path/to/files/changed
+$ git commit --amend
+$ git push -f
+```
 # How to add to the Stockpile?
 Stockpile uses Red Hat Ansible to collect system information. To add to the Stockpile, the user must create a new Anbile role that defines what they are looking to capture.
 

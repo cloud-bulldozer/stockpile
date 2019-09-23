@@ -1,0 +1,89 @@
+---
+- name: Create Backpack Namespace
+  k8s: 
+    name: backpack
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ kube_config }}"
+
+- name: Launch backpack daemonset
+  k8s:
+    state: present
+    definition: "{{ lookup('file', 'roles/backpack_kube/files/backpack_set.yaml') }}"
+    kubeconfig: "{{ kube_config }}"
+  register: my_daemon_set
+
+- name: Sleep 5 to allow process time
+  pause:
+    seconds: 5
+
+- name: Wait until all pods exit creating state
+  k8s_facts:
+    kind: Pod
+    kubeconfig: "{{ kube_config }}"
+    label_selectors:
+      - name = backpack
+  register: pod_list
+  until: "'Creating' not in pod_list | json_query('resources[].status.phase')"
+
+
+- name: Wait for all pods to contain BACKPACK_DONE
+  shell: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} -n backpack logs -l name=backpack | grep BACKPACK_DONE | wc -l"
+  register: done_count
+  until: "done_count.stdout|int == pod_list.resources|length"
+  retries: 60
+  delay: 10
+
+- name: Create backpack output directory
+  file:
+    path: "{{ backpack_output_dir }}"
+    state: directory
+    mode: "u=rw,g=rwx,o=rwx"
+
+- name: Dump logs to temporary directory
+  shell: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} -n backpack logs {{ item }} | grep -v BACKPACK_DONE > {{ backpack_output_dir }}/{{ item }}"
+  with_items:
+    - "{{ pod_list | json_query('resources[].metadata.name') }}"
+
+- name: Replace pod name with node name
+  replace:
+    path: "{{ backpack_output_dir }}/{{ item.metadata.name }}"
+    regexp: "{{ item.metadata.name }}"
+    replace: "{{ item.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution | json_query('nodeSelectorTerms[].matchFields[].values')|first|first }}"
+  with_items:
+      - "{{ pod_list.resources }}"
+
+- name: Replace leading localhost with node name
+  replace:
+    path: "{{ backpack_output_dir }}/{{ item.metadata.name }}"
+    regexp: 'localhost\": {'
+    replace: "{{ item.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution | json_query('nodeSelectorTerms[].matchFields[].values')|first|first }}\": {"
+  with_items:
+      - "{{ pod_list.resources }}"
+
+- name: Delete backpack dameonset
+  k8s:
+    state: absent
+    definition: "{{ lookup('file', 'roles/backpack_kube/files/backpack_set.yaml') }}"
+    kubeconfig: "{{ kube_config }}"
+
+- name: Delete backpack namespace
+  k8s:
+    name: backpack
+    api_version: v1
+    kind: Namespace
+    state: absent
+    kubeconfig: "{{ kube_config }}"
+    wait: yes
+    wait_condition:
+      type: Terminating
+      status: True
+    wait_timeout: 300
+
+- name: Clear unneeded facts
+  set_fact:
+    my_daemon_set: !!null
+    pod_list: !!null
+    done_count: !!null
+    file_info: !!null

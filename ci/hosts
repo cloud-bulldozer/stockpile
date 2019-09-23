@@ -1,5 +1,12 @@
-[all]
+[instance]
 # List of hosts which we want to gather information from
+localhost ansible_connection=local kube_config=/root/.kube/config
+
+[kubernetes]
+# List of hosts to kick off backpack on all associated nodes
+# Hosts should be defined with a variable definition for 
+# kube_config such as:
+# localhost ansible_connection=local kube_config=/home/user/.kube/config
 localhost ansible_connection=local kube_config=/root/.kube/config
 
 [stockpile]

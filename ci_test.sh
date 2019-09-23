@@ -31,7 +31,14 @@ do
   rescued=`echo $res | awk '{print $14}'`
   ignored=`echo $res | awk '{print $16}'`
 
-  check_json=`python3 ci/check_json.py -i /tmp/stockpile.json`
+  if [[ $tag == "backpack_kube" ]]
+  then
+    backpack=`ls /tmp/container/`
+    check_json=`python3 ci/check_json.py -i /tmp/container/$backpack`
+    rm -f /tmp/container/$backpack
+  else
+    check_json=`python3 ci/check_json.py -i /tmp/stockpile.json`
+  fi
 
   echo "Results from: "$tag
   if [[ -z $check_json ]]

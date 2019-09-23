@@ -8,9 +8,11 @@ import json
 
 def _is_json(input_file):
     my_json = json.load(open(input_file,'r'))
-    for key in my_json['localhost'].keys():
+    my_key = list(my_json.keys())
+    for key in my_json[my_key[0]].keys():
         if "stockpile_" in key and "stockpile_output_path" not in key and "stockpile_user" not in key:
-            print(json.dumps(my_json['localhost'][key], indent=4))
+            print(key)
+            print(json.dumps(my_json[my_key[0]][key], indent=4))
     
 
 def main():

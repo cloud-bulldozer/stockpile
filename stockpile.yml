@@ -1,8 +1,9 @@
 ---
-- hosts: all
+- hosts: instance
   remote_user: "{{ host_remote_user }}"
   become: true
   ignore_errors: yes
+  no_log: true
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
@@ -34,9 +35,21 @@
     - { role: k8s_namespaces, tags: k8s_namespaces }
     - { role: k8s_nodes, tags: k8s_nodes }
 
+- hosts: kubernetes
+  remote_user: "{{ container_remote_user }}"
+  become: true
+  no_log: true
+  ignore_errors: yes
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  roles:
+    - { role: backpack_kube, tags: backpack_kube }
+
 - hosts: stockpile
   gather_facts: false
   remote_user: "{{ stockpile_user }}"
+  no_log: true
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:

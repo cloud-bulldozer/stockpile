@@ -7,7 +7,6 @@
 
 - name: Run dmidecode
   command: dmidecode --quiet
-  become: true
   register: dmide_run
 
 - name: Storing the output of dmidecode

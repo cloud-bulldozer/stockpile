@@ -34,6 +34,7 @@
     #- { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
     - { role: k8s_namespaces, tags: k8s_namespaces }
     - { role: k8s_nodes, tags: k8s_nodes }
+    - { role: k8s_pods, tags: k8s_pods }
 
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"

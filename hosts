@@ -1,5 +1,8 @@
 [all]
 # List of hosts which we want to gather information from
+# For hosts to run the k8s_nodes role please define a kube_config
+# such as:
+# localhost ansible_connection=local kube_config=/home/user/.kube/config
 
 [stockpile]
 # The host stockpile is running from

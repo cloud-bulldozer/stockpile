@@ -1,0 +1,19 @@
+---
+  - name: check node
+    command: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} cluster-info"
+    register: cluster_status
+    ignore_errors: true
+
+  - block:
+    
+    - name: Get namespace info
+      k8s_facts:
+        kind: Namespace
+        kubeconfig: "{{ kube_config }}"
+      register: item_list
+
+    - name: Set item info as facts
+      set_fact:
+        stockpile_k8s_namespaces: "{{ item_list.resources }}"
+
+    when: cluster_status is succeeded

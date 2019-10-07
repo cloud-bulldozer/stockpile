@@ -31,6 +31,7 @@
     - { role: openstack_overcloud, tags: openstack_overcloud }
     #- { role: k8s_cluster_resources, tags: k8s_cluster_resources }
     #- { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
+    - { role: k8s_namespaces, tags: k8s_namespaces }
 
 - hosts: stockpile
   gather_facts: false

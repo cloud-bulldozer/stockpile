@@ -1,12 +1,10 @@
 #/bin/bash
 
-set -x
-
 # Prep the results.markdown file
 echo "Results for "$JOB_NAME > results.markdown
 echo "" >> results.markdown
-echo 'Tag | ok | changed | unreachable | failed | skipped | rescued | ignored' >> results.markdown
-echo '-----|---|---------|-------------|--------|---------|---------|------' >> results.markdown
+echo 'Tag | ok | changed | unreachable | failed | skipped | rescued | ignored | Returned info' >> results.markdown
+echo '-----|---|---------|-------------|--------|---------|---------|------|--------' >> results.markdown
 
 kube_config=$1
 
@@ -18,8 +16,8 @@ tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $6}'`
 
 for tag in $tag_list
 do
-  echo "Running tag: "$tag
-  results=`ansible-playbook -i ci/hosts stockpile.yml -e kube_config=$kube_config --tags=$tag | grep "ok=.*changed=.*unreachable=.*failed=.*skipped=.*rescued=.*ignored=.*"`
+  figlet $tag
+  results=`ansible-playbook -i ci/hosts stockpile.yml -e kube_config=$kube_config --tags=$tag,dump-facts | grep "ok=.*changed=.*unreachable=.*failed=.*skipped=.*rescued=.*ignored=.*"`
 
   echo $results
   
@@ -33,5 +31,16 @@ do
   rescued=`echo $res | awk '{print $14}'`
   ignored=`echo $res | awk '{print $16}'`
 
-  echo $tag"|"$ok"|"$changed"|"$unreachable"|"$failed"|"$skipped"|"$rescued"|"$ignored >> results.markdown
+  check_json=`python3 ci/check_json.py -i /tmp/stockpile.json`
+
+  echo "Results from: "$tag
+  if [[ -z $check_json ]]
+  then
+    echo "Returned no information"
+    echo $tag"|"$ok"|"$changed"|"$unreachable"|"$failed"|"$skipped"|"$rescued"|"$ignored"|Returned NO information" >> results.markdown
+  else  
+    echo $check_json
+    echo $tag"|"$ok"|"$changed"|"$unreachable"|"$failed"|"$skipped"|"$rescued"|"$ignored"|Returned valid JSON information" >> results.markdown
+  fi
+  echo ""
 done

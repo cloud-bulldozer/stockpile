@@ -1,5 +1,7 @@
 [all]
-localhost
+# List of hosts which we want to gather information from
+localhost ansible_connection=local kube_config=/root/.kube/config
 
 [stockpile]
-localhost
+# The host stockpile is running from
+localhost ansible_connection=local kube_config=/root/.kube/config

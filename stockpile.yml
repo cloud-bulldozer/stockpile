@@ -3,9 +3,11 @@
   remote_user: "{{ host_remote_user }}"
   become: true
   ignore_errors: yes
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
     - { role: openstack_common, tags: openstack_common }
-    #- { role: packages, tags: packages }
+    - { role: packages, tags: packages }
     - { role: cpu, tags: cpu }
     - { role: cpu_vulnerabilities, tags: cpu_vulnerabilities }
     - { role: kernel-debug, tags: kernel-debug }
@@ -14,8 +16,6 @@
     - { role: ceph, tags: ceph }
     - { role: openshift-cluster-topology, tags: openshift-cluster-topology }
     - { role: openshift-nodes, tags: openshift-nodes }
-    #- example
-    #- example2
     - { role: openstack_compute, tags: openstack_compute }
     - { role: openstack_nova, tags: openstack_nova }
     - { role: openstack_neutron, tags: openstack_neutron }
@@ -29,11 +29,13 @@
     - { role: openstack_glance, tags: openstack_glance }
     - { role: openstack_undercloud, tags: openstack_undercloud }
     - { role: openstack_overcloud, tags: openstack_overcloud }
-    - { role: k8s_cluster_resources, tags: k8s_cluster_resources }
-    - { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
+    #- { role: k8s_cluster_resources, tags: k8s_cluster_resources }
+    #- { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
 
 - hosts: stockpile
   gather_facts: false
   remote_user: "{{ stockpile_user }}"
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
     - { role: dump-facts, tags: dump-facts }

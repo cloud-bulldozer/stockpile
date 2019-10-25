@@ -3,7 +3,6 @@
   remote_user: "{{ host_remote_user }}"
   become: true
   ignore_errors: yes
-  no_log: true
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
@@ -33,14 +32,14 @@
     - { role: openstack_overcloud, tags: openstack_overcloud }
     #- { role: k8s_cluster_resources, tags: k8s_cluster_resources }
     #- { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
-    - { role: k8s_namespaces, tags: k8s_namespaces }
-    - { role: k8s_nodes, tags: k8s_nodes }
-    - { role: k8s_pods, tags: k8s_pods }
-    - { role: k8s_configmaps, tags: k8s_configmaps }
+    - { role: k8s_namespaces, become: false, tags: k8s_namespaces }
+    - { role: k8s_nodes, become: false, tags: k8s_nodes }
+    - { role: k8s_pods, become: false, tags: k8s_pods }
+    - { role: k8s_configmaps, become: false, tags: k8s_configmaps }
 
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"
-  become: true
+  become: false
   no_log: true
   ignore_errors: yes
   gather_facts: false

@@ -8,16 +8,18 @@ echo '-----|---|---------|-------------|--------|---------|---------|------|----
 
 kube_config=$1
 
+export KUBECONFIG=$kube_config
+
 # Setup hosts and vars for CI environment
 cp ci/all.yml group_vars/all.yml
 
 # Get the list of tags from stockpile.yml (minus lines beginning with #)
-tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $6}'`
+tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`
 
 for tag in $tag_list
 do
   figlet $tag
-  results=`ansible-playbook -i ci/hosts stockpile.yml -e kube_config=$kube_config --tags=$tag,dump-facts | grep "ok=.*changed=.*unreachable=.*failed=.*skipped=.*rescued=.*ignored=.*"`
+  results=`ansible-playbook -i ci/hosts stockpile.yml --tags=$tag,dump-facts | grep "ok=.*changed=.*unreachable=.*failed=.*skipped=.*rescued=.*ignored=.*"`
 
   echo $results
   

@@ -1,6 +1,6 @@
 ---
   - name: check node
-    command: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} cluster-info"
+    command: kubectl cluster-info
     register: cluster_status
     ignore_errors: true
 
@@ -9,7 +9,6 @@
     - name: Get node info
       k8s_facts:
         kind: Node
-        kubeconfig: "{{ kube_config }}"
       register: node_list
 
     - name: Set node info as facts

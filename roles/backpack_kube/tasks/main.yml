@@ -1,39 +1,57 @@
 ---
+- name: Set facts
+  set_fact:
+    elasticsearch:
+      server: "{{ elasticsearch.server | default('none') }}"
+      port: "{{ elasticsearch.port | default('12345') }}"
+
+- name: set UUID
+  set_fact: uuid={{ (999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N'))) | to_uuid() | string }}
+
+- name: set trunc_uuid
+  set_fact: trunc_uuid={{ uuid.split('-')[0] }}
+
 - name: Create Backpack Namespace
   k8s: 
-    name: backpack
+    name: "{{ operator_namespace }}"
     api_version: v1
     kind: Namespace
     state: present
-    kubeconfig: "{{ kube_config }}"
 
-- name: Launch backpack daemonset
+- name: Create Service Account
   k8s:
     state: present
-    definition: "{{ lookup('file', 'roles/backpack_kube/files/backpack_set.yaml') }}"
-    kubeconfig: "{{ kube_config }}"
-  register: my_daemon_set
+    definition: "{{ lookup('template', 'backpack_sa.yml') | from_yaml }}"
+  when: metadata_sa is defined
 
-- name: Sleep 5 to allow process time
-  pause:
-    seconds: 5
+- name: Create Service Account token
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'backpack_token.yml') | from_yaml }}"
+  when: metadata_sa is defined
 
-- name: Wait until all pods exit creating state
+- name: Create role binding for service account
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'backpack_role_binding.yml') | from_yaml }}"
+  when: metadata_sa is defined
+
+- name: Create backpack DaemonSet
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'backpack.yml') | from_yaml }}"
+  register: my_daemonset
+
+- name: Wait for daemonset to be ready
   k8s_facts:
-    kind: Pod
-    kubeconfig: "{{ kube_config }}"
-    label_selectors:
-      - name = backpack
-  register: pod_list
-  until: "'Creating' not in pod_list | json_query('resources[].status.phase')"
-
-
-- name: Wait for all pods to contain BACKPACK_DONE
-  shell: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} -n backpack logs -l name=backpack | grep BACKPACK_DONE | wc -l"
-  register: done_count
-  until: "done_count.stdout|int == pod_list.resources|length"
-  retries: 60
-  delay: 10
+    api_version: apps/v1
+    kind: DaemonSet
+    name: "backpack-{{ trunc_uuid }}"
+    namespace: "{{ operator_namespace }}"
+  register: my_daemonset
+  until: "my_daemonset | json_query('resources[].status.desiredNumberScheduled') == my_daemonset | json_query('resources[].status.numberReady') and my_daemonset | json_query('resources[].status.numberReady') != 0 "
+  retries: 120
+  delay: 5
 
 - name: Create backpack output directory
   file:
@@ -41,8 +59,16 @@
     state: directory
     mode: "u=rw,g=rwx,o=rwx"
 
+- name: Get pod list
+  k8s_facts:
+    kind: Pod
+    namespace: "{{ operator_namespace }}"
+    label_selectors:
+      - name = backpack-{{ trunc_uuid }}
+  register: pod_list
+
 - name: Dump logs to temporary directory
-  shell: "/usr/local/bin/kubectl --kubeconfig={{ kube_config }} -n backpack logs {{ item }} | grep -v BACKPACK_DONE > {{ backpack_output_dir }}/{{ item }}"
+  shell: "/usr/local/bin/kubectl -n {{ operator_namespace }} cp {{ item }}:/tmp/stockpile.json {{ backpack_output_dir }}/{{ item }}"
   with_items:
     - "{{ pod_list | json_query('resources[].metadata.name') }}"
 
@@ -62,19 +88,35 @@
   with_items:
       - "{{ pod_list.resources }}"
 
-- name: Delete backpack dameonset
+- name: Delete backpack DaemonSet
   k8s:
     state: absent
-    definition: "{{ lookup('file', 'roles/backpack_kube/files/backpack_set.yaml') }}"
-    kubeconfig: "{{ kube_config }}"
+    definition: "{{ lookup('template', 'backpack.yml') | from_yaml }}"
+
+- name: Delete role binding for service account
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'backpack_role_binding.yml') | from_yaml }}"
+  when: metadata_sa is defined
+
+- name: Delete Service Account token
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'backpack_token.yml') | from_yaml }}"
+  when: metadata_sa is defined
+
+- name: Delete Service Account
+  k8s:
+    state: absent
+    definition: "{{ lookup('template', 'backpack_sa.yml') | from_yaml }}"
+  when: metadata_sa is defined
 
 - name: Delete backpack namespace
   k8s:
-    name: backpack
+    name: "{{ operator_namespace }}"
     api_version: v1
     kind: Namespace
     state: absent
-    kubeconfig: "{{ kube_config }}"
     wait: yes
     wait_condition:
       type: Terminating

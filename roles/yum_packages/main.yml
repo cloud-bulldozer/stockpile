@@ -1,0 +1,23 @@
+- name: Get installed packages (yum)
+  yum:
+    list: installed
+  register: yum_installed_packages
+  when: ansible_pkg_mgr == 'yum'
+
+- name: storing the yum packages data
+  set_fact:
+    stockpile_yum_packages: "{{ yum_installed_packages | json_query('results[*].name') }}"
+  when: yum_installed_packages is not skipped
+
+- name: Get installed packages (dnf)
+  dnf:
+    list: installed
+  register: dnf_installed_packages
+  when: ansible_pkg_mgr == 'dnf'
+    
+- name: storing the dnf packages data
+  set_fact:
+    stockpile_dnf_packages: "{{ dnf_installed_packages | json_query('results[*].name') }}"
+  when: dnf_installed_packages is not skipped
+
+

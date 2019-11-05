@@ -1,0 +1,33 @@
+- name: Check if /etc/rhosp-release exists
+  stat:
+    path: /etc/rhosp-release
+  register: rhosp_release_stat
+
+- name: Get OSP Version
+  become: true
+  slurp:
+    src: "/etc/rhosp-release"
+  register: osp_version
+  when: rhosp_release_stat.stat.exists
+
+- name: set numeric version for release
+  set_fact:
+    version: "{{ osp_version.content | b64decode }}"
+
+- name: set rhosp version (downstream)
+  set_fact:
+    rhosp_version: "{{ version.split()[5] }}"
+
+- name: Set container_cli (Docker)
+  set_fact:
+    container_cli: docker
+  when: rhosp_version is version('15.0', '<') and osp_version is version('12.0', '>=')
+
+- name: Set container_cli (Podman)
+  set_fact:
+    container_cli: podman
+  when: rhosp_version is version('15.0', '>=')
+
+- name: Set version var for stockpile collection
+  set_fact:
+    stockpile_rhosp_version: "{{ rhosp_version }}"

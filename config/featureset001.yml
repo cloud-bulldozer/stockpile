@@ -10,6 +10,8 @@
     - ../roles/kernel-debug
     - ../roles/dmidecode
     - ../roles/yum_repos
+    - ../roles/yum_packages
+    - ../roles/openstack_version
     - ../roles/openstack_common
     - ../roles/openstack_overcloud
     - ../roles/openstack_compute

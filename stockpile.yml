@@ -14,6 +14,7 @@
     - { role: kernel-debug, tags: kernel-debug }
     - { role: dmidecode, tags: dmidecode }
     - { role: yum_repos, tags: yum_repos }
+    - { role: yum_packages, tags: yum_packages }
     - { role: ceph, tags: ceph }
     - { role: openshift-cluster-topology, tags: openshift-cluster-topology }
     - { role: openshift-nodes, tags: openshift-nodes }

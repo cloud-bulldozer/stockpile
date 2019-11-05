@@ -1,16 +1,25 @@
 ---
-- name: check if yum is present
-  command: python -c "import yum"
-  register: yum_installed
-  ignore_errors: yes
+- name: collect yum repos
+  yum:
+    list: repos
+  register: yum_repos
+  when: ansible_pkg_mgr == 'yum'
 
-- block:
-    - name: collect yum repos
-      yum:
-        list: repos
-      register: yum_repos
+- name: storing the yum repos data
+  set_fact:
+    stockpile_yum_repos: "{{ yum_repos.results }}"
+  when: yum_repos is not skipped
 
-    - name: storing the yum repos data
-      set_fact:
-        stockpile_yum_repos: "{{ yum_repos.results }}"
-  when: yum_installed.rc == 0
+- name: collect dnf repos
+  dnf:
+    list: repos
+  register: dnf_repos
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: storing the dnf repos data
+  set_fact:
+    stockpile_dnf_repos: "{{ dnf_repos.results }}"
+  when: dnf_repos is not skipped
+
+
+

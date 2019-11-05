@@ -109,9 +109,7 @@ def is_containerized(service_name):
     docker_out = run_cmd("docker ps")
     podman_out = run_cmd("podman ps")
 
-    if service_name in docker_out['stdout']:
-        return True
-    elif service_name in podman_out['stdout']:
+    if service_name in docker_out['stdout'] or service_name in podman_out['stdout']::
         return True
     else:
         return False

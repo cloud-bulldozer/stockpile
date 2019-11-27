@@ -1,0 +1,19 @@
+---
+  - name: check node
+    command: kubectl cluster-info
+    register: cluster_status
+    ignore_errors: true
+
+  - block:
+    - name: Get install config info
+      k8s_info:
+        kind: ConfigMap
+        namespace: kube-system
+        name: cluster-config-v1
+      register: configmap_install
+
+    - name: Set info as facts
+      set_fact:
+        stockpile_ocp_install_config: "{{ configmap_install.resources[0].data['install-config'] | from_yaml }}"
+
+    when: cluster_status is succeeded

@@ -5,45 +5,45 @@
   remote_user: "{{ overcloud_user }}"
   become: true
   roles:
-    - ../roles/cpu
-    - ../roles/cpu_vulnerabilities
-    - ../roles/kernel-debug
-    - ../roles/dmidecode
-    - ../roles/yum_repos
-    - ../roles/yum_packages
-    - ../roles/openstack_version
-    - ../roles/openstack_common
-    - ../roles/openstack_overcloud
-    - ../roles/openstack_compute
-    - ../roles/openstack_ceilometer
-    - ../roles/openstack_cinder
-    - ../roles/openstack_glance
-    - ../roles/openstack_gnocchi
-    - ../roles/openstack_heat
-    - ../roles/openstack_keystone
-    - ../roles/openstack_mysql
-    - ../roles/openstack_neutron
-    - ../roles/openstack_nova
-    - ../roles/openstack_rabbitmq
+    - { role: ../roles/cpu, tags: oc_cpu }
+    - { role: ../roles/cpu_vulnerabilities, tags: oc_cpu_vulnerabilities }
+    - { role: ../roles/kernel-debug, tags: oc_kernel-debug }
+    - { role: ../roles/dmidecode, tags: oc_dmidecode }
+    - { role: ../roles/yum_repos, tags: oc_yum_repos }
+    - { role: ../roles/yum_packages, tags: oc_yum_repos }
+    - { role: ../roles/openstack_version, tags: oc_openstack_version }
+    - { role: ../roles/openstack_common, tags: oc_openstack_common }
+    - { role: ../roles/openstack_overcloud, tags: oc_openstack_overcloud }
+    - { role: ../roles/openstack_compute, tags: oc_openstack_compute }
+    - { role: ../roles/openstack_ceilometer, tags: oc_openstack_ceilometer }
+    - { role: ../roles/openstack_cinder, tags: oc_openstack_cinder }
+    - { role: ../roles/openstack_glance, tags: oc_openstack_glance }
+    - { role: ../roles/openstack_gnocchi,tags: oc_openstack_gnocchi }
+    - { role: ../roles/openstack_heat, tags: oc_openstack_heat }
+    - { role: ../roles/openstack_keystone, tags: oc_openstack_keystone }
+    - { role: ../roles/openstack_mysql, tags: oc_openstack_mysql }
+    - { role: ../roles/openstack_neutron, tags: oc_openstack_neutron }
+    - { role: ../roles/openstack_nova, tags: oc_openstack_nova }
+    - { role: ../roles/openstack_rabbitmq, tags: oc_openstack_rabbitmq }
 
 - hosts: undercloud
   remote_user: "{{ undercloud_user }}"
   become: true
   roles:
-    - ../roles/cpu
-    - ../roles/cpu_vulnerabilities
-    - ../roles/kernel-debug
-    - ../roles/dmidecode
-    - ../roles/yum_repos
-    - ../roles/yum_packages
-    - ../roles/openstack_version
-    - ../roles/openstack_common
-    - ../roles/openstack_undercloud
-    - ../roles/openstack_mistral
-    - ../roles/openstack_mysql
+    - { role: ../roles/cpu, tags: uc_cpu }
+    - { role: ../roles/cpu_vulnerabilities, tags: uc_cpu_vulnerabilities }
+    - { role: ../roles/kernel-debug, tags: uc_kernel-debug }
+    - { role: ../roles/dmidecode, tags: uc_dmidecode }
+    - { role: ../roles/yum_repos, tags: uc_yum_repos }
+    - { role: ../roles/yum_packages, tags: uc_yum_packages }
+    - { role: ../roles/openstack_version, tags: uc_openstack_version }
+    - { role: ../roles/openstack_common, tags: uc_openstack_common }
+    - { role: ../roles/openstack_undercloud, tags: uc_openstack_undercloud }
+    - { role: ../roles/openstack_mistral, tags: uc_openstack_mistral }
+    - { role: ../roles/openstack_mysql, tags: uc_openstack_mysql }
 
 - hosts: stockpile
   gather_facts: false
   remote_user: "{{ stockpile_user }}"
   roles:
-    - ../roles/dump-facts
+    - { role: ../roles/dump-facts, tags: dump-facts }

@@ -1,0 +1,33 @@
+---
+
+- name: check if lspci is installed
+  command: which lspci
+  register: lspci_installed
+
+- block:
+    
+    - name: capture lspci device list
+      shell: lspci | awk '{print $1}'
+      register: lspci_dev
+
+    - name: capture lspci device info
+      command: lspci -s "{{ item }}" -vmmk
+      register: lspci_data
+      with_items: "{{ lspci_dev.stdout_lines }}"
+
+    - name: debug
+      debug:
+        var: item.stdout_lines[3]
+      with_items: "{{ lspci_data.results }}"
+
+    - name: set lspci facts
+      set_fact:
+        stockpile_lspci: "{{ stockpile_lspci|default({}) | combine( { item.item: item.stdout } ) }}"
+      with_items: "{{ lspci_data.results }}"
+
+  when: lspci_installed.rc == 0
+
+- name: clear unneeded facts
+  set_fact:
+    lspci_dev: null
+    lspci_data: null

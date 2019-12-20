@@ -7,11 +7,11 @@ VENVDIR="$BASEDIR/venv"
 cd $BASEDIR
 source $VENVDIR/bin/activate
 cd
-scp -r ~/stockpile stack@undercloud-0:~/
+scp -r /var/lib/jenkins-slave/workspace/stockpile_job_osp stack@undercloud-0:~/
 ssh -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa stack@undercloud-0 <<'EOSSH'
   source stackrc
-  cd ~/stockpile
-  pushd ~/stockpile
+  cd ~/stockpile_job_osp
+  pushd ~/stockpile_job_osp
   # Prep the results.markdown file
   echo "Results for "$JOB_NAME > results.markdown
   echo "" >> results.markdown

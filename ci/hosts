@@ -9,3 +9,23 @@ localhost ansible_connection=local
 [stockpile]
 # The host stockpile is running from
 localhost ansible_connection=local
+undercloud-0 ansible_host=172.16.0.30 ansible_connection=ssh stockpile_user=stack
+
+[undercloud]
+undercloud-0 ansible_host=172.16.0.30 ansible_connection=ssh ansible_user=stack
+
+[undercloud:vars]
+undercloud_user=stack
+container_cli=docker
+config_path=/var/lib/config-data/puppet-generated
+
+
+[overcloud:vars]
+overcloud_user=heat-admin
+container_cli=docker
+config_path=/var/lib/config-data/puppet-generated
+
+
+[overcloud]
+controller-0 ansible_host=192.168.24.8  ansible_connection=ssh overcloud_user=heat-admin
+compute-0 ansible_host=192.168.24.6  ansible_connection=ssh overcloud_user=heat-admin

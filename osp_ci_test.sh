@@ -49,6 +49,7 @@ ssh -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_
     echo ""
     done
    done
+  scp -r results.markdown root@10.1.184.82:~/var/lib/jenkins-slave/workspace/stockpile_job_osp
   popd
 EOSSH
 

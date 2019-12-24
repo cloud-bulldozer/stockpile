@@ -43,13 +43,12 @@ ssh -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_
          echo "Returned no information"
          echo $tag"|"$subtag"|"$ok"|"$changed"|"$unreachable"|"$failed"|Returned NO information" >> results.markdown
        else
-         echo $check_json
+         echo "Returned valid JSON information"
          echo $tag"|"$subtag"|"$ok"|"$changed"|"$unreachable"|"$failed"|Returned valid JSON information" >> results.markdown
        fi
     echo ""
     done
    done
-  scp -r ~/stockpile_job_osp/results.markdown root@10.1.184.82:~/var/lib/jenkins-slave/workspace/stockpile_job_osp
   popd
 EOSSH
 

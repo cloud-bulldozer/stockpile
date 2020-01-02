@@ -10,4 +10,3 @@ container_cli: docker
 backpack_output_dir: /tmp/container
 # The user to connecect to kubernetes hosts with
 container_remote_user: root
-

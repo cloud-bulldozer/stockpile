@@ -15,8 +15,8 @@ ssh -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/.ssh/id_
   # Prep the results_osp.markdown file
   echo "Results for stockpile_osp_job" > results_osp.markdown
   echo "" >> results_osp.markdown
-  echo 'Tag | SubTag | ok | changed | unreachable | failed | Returned info' >> results.markdown
-  echo '-----|------- |---|---------|-------------|--------|--------' >> results.markdown
+  echo 'Tag | SubTag | ok | changed | unreachable | failed | Returned info' >> results_osp.markdown
+  echo '-----|------- |---|---------|-------------|--------|--------' >> results_osp.markdown
   # Setup hosts and vars for CI environment
   cp ci/all.yml group_vars/all.yml
   tag_list=`grep tags config/featureset001.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`

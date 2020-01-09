@@ -103,8 +103,8 @@
   when: rhos_puddle is success and rhos_puddle.stdout != ""
 
 - name: Set fact for OpenStack release
-  set_fact:
-    stockpile_rhosp_undercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
+  command: cat /etc/rhosp-release
+  register: rhosp_release
+- set_fact:
+    stockpile_rhosp_undercloud_release: "{{ rhosp_release.stdout }}"
   ignore_errors: true
-
-

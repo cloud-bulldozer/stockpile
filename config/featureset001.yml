@@ -10,7 +10,7 @@
     - { role: ../roles/kernel-debug, tags: oc_kernel-debug }
     - { role: ../roles/dmidecode, tags: oc_dmidecode }
     - { role: ../roles/yum_repos, tags: oc_yum_repos }
-    - { role: ../roles/yum_packages, tags: oc_yum_repos }
+    - { role: ../roles/yum_packages, tags: oc_yum_packages }
     - { role: ../roles/openstack_version, tags: oc_openstack_version }
     - { role: ../roles/openstack_common, tags: oc_openstack_common }
     - { role: ../roles/openstack_overcloud, tags: oc_openstack_overcloud }

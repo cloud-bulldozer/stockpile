@@ -12,7 +12,7 @@
     - { role: ../roles/yum_repos, tags: oc_yum_repos }
     - { role: ../roles/yum_packages, tags: oc_yum_packages }
     - { role: ../roles/openstack_version, tags: oc_openstack_version }
-    - { role: ../roles/openstack_common, tags: oc_openstack_common }
+    - { role: ../roles/openstack_common, tags: openstack_common }
     - { role: ../roles/openstack_overcloud, tags: oc_openstack_overcloud }
     - { role: ../roles/openstack_compute, tags: oc_openstack_compute }
     - { role: ../roles/openstack_ceilometer, tags: oc_openstack_ceilometer }
@@ -37,7 +37,7 @@
     - { role: ../roles/yum_repos, tags: uc_yum_repos }
     - { role: ../roles/yum_packages, tags: uc_yum_packages }
     - { role: ../roles/openstack_version, tags: uc_openstack_version }
-    - { role: ../roles/openstack_common, tags: uc_openstack_common }
+    - { role: ../roles/openstack_common, tags: openstack_common }
     - { role: ../roles/openstack_undercloud, tags: uc_openstack_undercloud }
     - { role: ../roles/openstack_mistral, tags: uc_openstack_mistral }
     - { role: ../roles/openstack_mysql, tags: uc_openstack_mysql }

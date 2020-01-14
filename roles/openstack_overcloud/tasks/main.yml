@@ -1,8 +1,11 @@
-- name: Set fact for OpenStack release
-  command: cat /etc/rhosp-release
+- name: slurp OpenStack release file
+  slurp:
+    src: /etc/rhosp-release
   register: rhosp_release
-- set_fact:
-    stockpile_rhosp_overcloud_release: "{{ rhosp_release.stdout }}"
+
+- name: Set fact for OpenStack release
+  set_fact:
+    stockpile_rhosp_overcloud_release: "{{ rhosp_release['content'] | b64decode  }}"
   ignore_errors: true
 
 - name: Get ovs version
@@ -14,4 +17,3 @@
   set_fact:
     stockpile_osp_overcloud_ovs_version: "{{ ovs_version.stdout }}"
   when: ovs_version.rc == 0
-

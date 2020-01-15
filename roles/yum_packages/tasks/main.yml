@@ -1,3 +1,4 @@
+---
 - name: Get installed packages (yum)
   yum:
     list: installed
@@ -19,5 +20,3 @@
   set_fact:
     stockpile_dnf_packages: "{{ dnf_installed_packages | json_query('results[*].name') }}"
   when: dnf_installed_packages is not skipped
-
-

@@ -11,8 +11,14 @@
     stockpile_openstack_rabbitmq_file_descriptors: "{{ rabbitmq_desc.stdout }}"
   when: rabbitmq_desc is succeeded and containers is not defined and rabbitmq_desc.stdout != ""
 
+- name: get rabbitmq bundle name - container
+  shell: "{{ container_cli }} ps | grep rabbit | awk '{print $(NF)}'"
+  register: rabbitmq_name
+  ignore_errors: true
+  when: containers is defined and '"rabbit" in rabbitmq_name.stdout'
+
 - name : Get rabbitmq file descriptors - containers
-  shell: "{{ container_cli }} exec rabbitmq rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'"
+  shell: "{{ container_cli }} exec {{ rabbitmq_name.stdout }} rabbitmqctl status | grep total_limit | awk -F',' '{print $2}'| sed 's/.$//'"
   register: rabbitmq_desc
   ignore_errors: true
   when: containers is defined

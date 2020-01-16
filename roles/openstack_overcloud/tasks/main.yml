@@ -5,7 +5,7 @@
 
 - name: Set fact for OpenStack release
   set_fact:
-    stockpile_rhosp_overcloud_release: "{{ rhosp_release['content'] | b64decode  }}"
+    stockpile_osp_overcloud_release: "{{ rhosp_release['content'] | b64decode  }}"
   ignore_errors: true
 
 - name: Get ovs version

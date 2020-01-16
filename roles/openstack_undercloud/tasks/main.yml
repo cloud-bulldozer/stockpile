@@ -102,9 +102,12 @@
     stockpile_rhosp_build: "{{ rhos_puddle.stdout }}"
   when: rhos_puddle is success and rhos_puddle.stdout != ""
 
+- name: slurp osp release file
+  slurp:
+    src: /etc/rhosp-release
+  register: rhosp_release
+
 - name: Set fact for OpenStack release
   set_fact:
-    stockpile_rhosp_undercloud_release: "{{ lookup('file', '/etc/rhosp-release') }}"
+    stockpile_rhosp_undercloud_release: "{{ rhosp_release['content'] | b64decode  }}"
   ignore_errors: true
-
-

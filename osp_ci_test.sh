@@ -20,10 +20,11 @@ echo 'Tag | SubTag | ok | changed | unreachable | failed | Returned info' >> res
 echo '-----|------- |---|---------|-------------|--------|--------' >> results_osp.markdown
 # Setup hosts and vars for CI environment
 cp ci/all.yml group_vars/all.yml
+cp config/featureset001.yml $JENKINSDIR/
 labels=("oc_*" "uc_*")
 for label in ${labels[@]}
 do
-  tag_list=`grep 'tags: '"$label"'' config/featureset001.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`
+  tag_list=`grep 'tags: '"$label"'' featureset001.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`
   echo $tag_list
   if [ $label = "oc_*" ]; then
     array=("controller.*" "compute.*")
@@ -36,7 +37,7 @@ do
   do
     figlet $tag
     for i in "${array[@]}"; do
-      results=`ansible-playbook -i ci/hosts config/featureset001.yml  -v --tags=openstack_common,$tag,dump-facts | grep "$i ok=.*changed=.*unreachable=.*failed=.*"`
+      results=`ansible-playbook -i ci/hosts featureset001.yml  -v --tags=openstack_common,$tag,dump-facts | grep "$i ok=.*changed=.*unreachable=.*failed=.*"`
       echo $results
       # set resulting variables
       res=`echo $results | sed 's/=/ /g'`

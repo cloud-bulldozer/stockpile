@@ -8,12 +8,20 @@ localhost ansible_connection=local
 
 [stockpile]
 # The host stockpile is running from
-localhost ansible_connection=local stockpile_user=root stockpile_output_path=/tmp/stockpile.json
+localhost ansible_connection=local 
 
 [undercloud]
-undercloud-0 ansible_host=undercloud_ip ansible_connection=ssh ansible_user=stack undercloud_user=stack container_cli=docker config_path=/var/lib/config-data/puppet-generated
+undercloud-0 ansible_host=undercloud_ip 
+
+[undercloud:vars]
+ansible_connection=ssh
+ansible_user=stack 
 
 [overcloud]
-controller-0 ansible_host=controller_ip  ansible_connection=ssh ansible_user=heat-admin overcloud_user=heat-admin container_cli=docker config_path=/var/lib/config-data/puppet-generated
-compute-0 ansible_host=compute_ip  ansible_connection=ssh ansible_user=heat-admin overcloud_user=heat-admin container_cli=docker config_path=/var/lib/config-data/puppet-generated
+controller-0 ansible_host=controller_ip
+compute-0 ansible_host=compute_ip
+
+[overcloud:vars]
+ansible_connection=ssh
+ansible_user=heat-admin
 

@@ -4,44 +4,40 @@
   become: true
   ignore_errors: yes
   vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
-  roles:
-    - { role: openstack_common, tags: openstack_common }
-    - { role: packages, tags: packages }
-    - { role: cpu, tags: cpu }
-    - { role: cpu_vulnerabilities, tags: cpu_vulnerabilities }
-    - { role: memory, tags: memory }
-    - { role: sysctl, tags: sysctl }
-    - { role: kernel-debug, tags: kernel-debug }
-    - { role: dmidecode, tags: dmidecode }
-    - { role: yum_repos, tags: yum_repos }
-    - { role: yum_packages, tags: yum_packages }
+    - { role: packages, tags: [common, packages] }
+    - { role: cpu, tags: [common, cpu] }
+    - { role: sysctl, tags: [common, sysctl] }
+    - { role: memory, tags: [common, memory] }
+    - { role: lspci, tags: [common, lspci] }
+    - { role: cpu_vulnerabilities, tags: [common, cpu_vulnerabilities] }
+    - { role: kernel-debug, tags: [common, kernel-debug] }
+    - { role: dmidecode, tags: [common, dmidecode] }
+    - { role: yum_repos, tags: [common, yum_repos] }
+    - { role: yum_packages, tags: [common, yum_packages] }
+    - { role: openshift-cluster-topology, tags: [openshift, openshift-cluster-topology] }
+    - { role: openshift-nodes, tags: [openshift, openshift-nodes] }
+    - { role: openshift-networking, tags: [openshift, openshift-networking] }
+    - { role: ocp_cluster_config, tags: [openshift, ocp_cluster_config] }
+    - { role: k8s_nodes, tags: [k8s, k8s_nodes] }
+    - { role: k8s_pods, tags: [k8s, k8s_pods] }
+    - { role: k8s_configmaps, tags: [k8s, k8s_configmaps] }
+    - { role: k8s_namespaces, tags: [k8s, k8s_namespaces] }
     - { role: ceph, tags: ceph }
-    - { role: openshift-cluster-topology, tags: openshift-cluster-topology }
-    - { role: openshift-networking, tags: openshift-networking }
-    - { role: openshift-nodes, tags: openshift-nodes }
-    - { role: openstack_compute, tags: openstack_compute }
-    - { role: openstack_nova, tags: openstack_nova }
-    - { role: openstack_neutron, tags: openstack_neutron }
-    - { role: openstack_keystone, tags: openstack_keystone }
-    - { role: openstack_ceilometer, tags: openstack_ceilometer }
-    - { role: openstack_gnocchi, tags: openstack_gnocchi }
-    - { role: openstack_cinder, tags: openstack_cinder }
-    - { role: openstack_heat, tags: openstack_heat }
-    - { role: openstack_mysql, tags: openstack_mysql }
-    - { role: openstack_rabbitmq, tags: openstack_rabbitmq }
-    - { role: openstack_glance, tags: openstack_glance }
-    - { role: openstack_undercloud, tags: openstack_undercloud }
-    - { role: openstack_overcloud, tags: openstack_overcloud }
-    #- { role: k8s_cluster_resources, tags: k8s_cluster_resources }
-    #- { role: k8s_cluster_contexts, tags: k8s_cluster_contexts }
-    - { role: k8s_namespaces, become: false, tags: k8s_namespaces }
-    - { role: k8s_nodes, become: false, tags: k8s_nodes }
-    - { role: k8s_pods, become: false, tags: k8s_pods }
-    - { role: k8s_configmaps, become: false, tags: k8s_configmaps }
-    - { role: ocp_cluster_config, become: false, tags: ocp_cluster_config }
-    - { role: lspci, tags: lspci }
     - { role: nvidia_smi, tags: nvidia_smi }
+    - { role: openstack_common, tags: [openstack, openstack_common] }
+    - { role: openstack_compute, tags: [openstack, openstack_compute] }
+    - { role: openstack_nova, tags: [openstack, openstack_nova] }
+    - { role: openstack_neutron, tags: [openstack, openstack_neutron] }
+    - { role: openstack_keystone, tags: [openstack, openstack_keystone] }
+    - { role: openstack_ceilometer, tags: [openstack, openstack_ceilometer] }
+    - { role: openstack_gnocchi, tags: [openstack, openstack_gnocchi] }
+    - { role: openstack_cinder, tags: [openstack, openstack_cinder] }
+    - { role: openstack_heat, tags: [openstack, openstack_heat] }
+    - { role: openstack_mysql, tags: [openstack, openstack_mysql] }
+    - { role: openstack_rabbitmq, tags: [openstack, openstack_rabbitmq] }
+    - { role: openstack_glance, tags: [openstack, openstack_glance] }
+    - { role: openstack_undercloud, tags: [openstack, openstack_undercloud] }
+    - { role: openstack_overcloud, tags: [openstack, openstack_overcloud] }
 
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"
@@ -51,7 +47,7 @@
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
-    - { role: backpack_kube, tags: backpack_kube }
+    - { role: backpack_kube, tags: [k8s, backpack_kube] }
 
 - hosts: stockpile
   gather_facts: false
@@ -60,4 +56,5 @@
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
-    - { role: dump-facts, tags: dump-facts }
+    - { role: dump-facts, tags: always }
+

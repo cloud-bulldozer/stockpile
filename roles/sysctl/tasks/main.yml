@@ -1,0 +1,17 @@
+---
+
+- name: check for sysctl
+  command: which sysctl
+  register: sysctl_installed
+  ignore_errors: yes
+
+- name: capture sysctl
+  command: sysctl -a
+  register: sysctl_info
+  when: sysctl_installed.rc == 0
+
+- name: set the collected sysctl info as facts
+  set_fact:
+    stockpile_sysctl:
+      sysctl: "{{ sysctl_info.stdout }}"
+  when: sysctl_installed.rc == 0

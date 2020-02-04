@@ -10,6 +10,8 @@
     - { role: packages, tags: packages }
     - { role: cpu, tags: cpu }
     - { role: cpu_vulnerabilities, tags: cpu_vulnerabilities }
+    - { role: memory, tags: memory }
+    - { role: sysctl, tags: sysctl }
     - { role: kernel-debug, tags: kernel-debug }
     - { role: dmidecode, tags: dmidecode }
     - { role: yum_repos, tags: yum_repos }

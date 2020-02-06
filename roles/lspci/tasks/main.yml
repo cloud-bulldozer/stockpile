@@ -1,0 +1,14 @@
+---
+
+- name: check if lspci is installed
+  command: which lspci
+  register: lspci_installed
+
+- block:
+
+    - name: capture lspci -v
+      shell: lspci -v
+      register: lspci_devices
+
+  when: lspci_installed.rc == 0
+

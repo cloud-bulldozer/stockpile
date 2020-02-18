@@ -6,8 +6,8 @@
 
 - block:
 
-    - name: capture lspci -v
-      shell: lspci -v
+    - name: capture lspci -mmvk
+      shell: lspci -mmvk
       register: lspci_devices
 
     - name: set facts for lspci

@@ -23,53 +23,58 @@
       shell:  oc get nodes -l node-role.kubernetes.io/compute | grep -w "Ready" | wc -l
       register: ocp_compute_count
 
-    - name: openshift masters and etcd count assuming that masters are etcd are co-located
+    - name: get openshift masters node count
       shell: oc get nodes -l node-role.kubernetes.io/master | grep -w "Ready" | wc -l
       register: ocp_master_count
 
-    - name: ocp cluster network
-      command: oc get clusternetwork -o json
-      register: ocp_network_plugin
-
     - name: ocp network operator
-      command: oc get networks.operator.openshift.io cluster -o yaml
+      command: oc get networks.operator.openshift.io cluster -o json
       register: ocp_network_operator
 
     - name: ocp host subnets
       command: oc get hostsubnet -o json
-      register: ocp_host_subnets
+      register: host_subnets
 
     - name: ocp dns config
       command: oc get dns -o json
       register: ocp_dns
 
-    - name: oc client version
-      shell: oc version | awk '/^Client/{print $3}'
-      register: oc_client_version
+    - name: versions
+      command: oc version -o json
+      register: versions
 
-    - name: oc server version
-      shell: oc version | awk '/^Server/{print $3}'
-      register: oc_server_version
+    - set_fact:
+        oc_client_version: "{{ versions.stdout | from_json | json_query('clientVersion.gitVersion') }}"
+        oc_server_version: "{{ versions.stdout | from_json | json_query('openshiftVersion') }}"
+        kube_server_version: "{{ versions.stdout | from_json | json_query('serverVersion.gitVersion') }}"
 
-    - name: kubernetes server version
-      shell: oc version | awk '/^Kubernetes/{print $3}'
-      register: kube_server_version
+    - name: cluster version
+      command: oc get clusterversion version -o json
+      register: ocp_cluster_version
+
+    - name: cluster operators
+      command: oc get co -o json
+      register: ocp_cluster_operators
+
+    - name: kubelet configs
+      command: oc get kubeletconfig -o json
+      register: ocp_kubeletconfig
+
+    - name: apiserver config
+      command: oc get apiserver -o json
+      register: ocp_apiserver
+
+    - name: network attachment definitions
+      command: oc get network-attachment-definitions -A -o json
+      register: ocp_networkattachments
+
+    - name: tuned profiles
+      command: oc get tuned -n openshift-cluster-node-tuning-operator -o json
+      register: ocp_tuned
 
     - name: openshift user
       command: oc whoami
       register: ocp_user
-
-    - name: infra pods
-      shell: for infra_node in $(oc get nodes -l node-role.kubernetes.io/infra=true | awk 'NR>1 {print $1}' ); do oc get pods --all-namespaces --field-selector spec.nodeName=$infra_node -o wide | awk 'NR>1 {print $2}'; done
-      register: ocp_infra_pods
-
-    - name: get the system pod names in crashloop state
-      shell: oc get pods -n kube-system -o wide | grep -v "Running" | awk 'NR>1 {print $1}'
-      register: ocp_failed_pods
-
-    - name: get the components status
-      command: oc get cs -o json
-      register: ocp_components_status
 
     - name: services
       command: oc get svc --all-namespaces -o json
@@ -95,22 +100,6 @@
       command: oc get pvc --all-namespaces -o json
       register: ocp_pvc
 
-    - name: openshift compute node config
-      script: openshift_config_scraper.py node-config-compute
-      register: ocp_compute_configmap
-
-    - name: openshift master node config
-      script: openshift_config_scraper.py node-config-master
-      register: ocp_master_configmap
-
-    - name: openshift web-console config
-      script: openshift_config_scraper.py webconsole-config
-      register: ocp_webconsole_configmap
-
-    - name: openshift infra node config
-      script: openshift_config_scraper.py node-config-infra
-      register: ocp_infra_configmap
-
     - name: set the collected info as facts
       set_fact:
         stockpile_openshift_cluster_topology:
@@ -118,25 +107,23 @@
           compute_count: "{{ ocp_compute_count.stdout }}"
           master_count: "{{ ocp_master_count.stdout }}"
           etcd_count: "{{ ocp_master_count.stdout }}"
-          cluster_network_plugin: "{{ ocp_network_plugin.stdout | from_json | json_query('items[].pluginName') }}"
-          client_version: "{{ oc_client_version.stdout }}"
-          server_version: "{{ oc_server_version.stdout }}"
+          client_version: "{{ oc_client_version }}"
+          server_version: "{{ oc_server_version }}"
+          kubernetes_server_version: "{{ kube_server_version }}"
           user: "{{ ocp_user.stdout }}"
-          infra_pods: "{{ ocp_infra_pods.stdout.split('\n') }}"
-          failed_system_pods: "{{ ocp_failed_pods.split('\n') }}"
-          components_status: "{{ ocp_components_status.stdout }}"
           services: "{{ ocp_svc.stdout }}"
           service_accounts: "{{ ocp_sa.stdout }}"
           security_context_constraints: "{{ ocp_scc.stdout }}"
           persistent_volumes: "{{ ocp_pv.stdout }}"
           persistent_volume_claim: "{{ ocp_pvc.stdout }}"
-          kubernetes_server_version: "{{ kube_server_version }}"
-          node_config_compute: "{{ ocp_compute_configmap.stdout }}"
-          node_config_master: "{{ ocp_master_configmap.stdout }}"
-          node_config_infra: "{{ ocp_infra_configmap.stdout }}"
-          web_console_config: "{{ ocp_webconsole_configmap.stdout }}"
-          storage_classes: "{{ ocp_sc }}"
-          network_operator: "{{ ocp_network_operator }}"
-          dns: "{{ ocp_dns }}"
-          host_subnets: "{{ ocp_host_subnets }}"
+          storage_classes: "{{ ocp_sc.stdout }}"
+          ocp_network_operator: "{{ ocp_network_operator.stdout }}"
+          ocp_dns: "{{ ocp_dns.stdout }}"
+          ocp_host_subnets: "{{ ocp_host_subnets | default('') }}"
+          ocp_cluster_version: "{{ ocp_cluster_version }}"
+          ocp_cluster_operators: "{{ ocp_cluster_operators.stdout }}"
+          ocp_kubeletconfig: "{{ ocp_kubeletconfig.stdout }}"
+          ocp_apiserver: "{{ ocp_apiserver.stdout }}"
+          ocp_networkattachments: "{{ ocp_networkattachments.stdout }}"
+          ocp_tuned: "{{ ocp_tuned.stdout }}"
   when: ( oc_installed.rc == 0 and kubeconfig.stat.exists )

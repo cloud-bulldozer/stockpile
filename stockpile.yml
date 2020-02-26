@@ -18,6 +18,7 @@
     - { role: yum_packages, tags: yum_packages }
     - { role: ceph, tags: ceph }
     - { role: openshift-cluster-topology, tags: openshift-cluster-topology }
+    - { role: openshift-networking, tags: openshift-networking }
     - { role: openshift-nodes, tags: openshift-nodes }
     - { role: openstack_compute, tags: openstack_compute }
     - { role: openstack_nova, tags: openstack_nova }

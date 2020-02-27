@@ -39,6 +39,7 @@
     - { role: k8s_pods, become: false, tags: k8s_pods }
     - { role: k8s_configmaps, become: false, tags: k8s_configmaps }
     - { role: ocp_cluster_config, become: false, tags: ocp_cluster_config }
+    - { role: lspci, tags: lspci }
 
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"

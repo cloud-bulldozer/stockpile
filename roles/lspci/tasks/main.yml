@@ -1,0 +1,18 @@
+---
+
+- name: check if lspci is installed
+  command: which lspci
+  register: lspci_installed
+
+- block:
+
+    - name: capture lspci -mmvk
+      shell: lspci -mmvk
+      register: lspci_devices
+
+    - name: set facts for lspci
+      set_fact:
+          stockpile_lspci: "{{ lspci_devices.stdout }}"
+
+  when: lspci_installed.rc == 0
+

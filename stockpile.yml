@@ -4,6 +4,8 @@
   become: true
   ignore_errors: yes
   vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  roles:
     - { role: packages, tags: [common, packages] }
     - { role: cpu, tags: [common, cpu] }
     - { role: sysctl, tags: [common, sysctl] }

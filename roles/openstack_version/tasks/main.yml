@@ -18,10 +18,29 @@
   set_fact:
     rhosp_version: "{{ version.split()[5] }}"
 
+- name: set rhosp major version
+  set_fact:
+    rhosp_major: "{{ version | regex_replace('^Red Hat OpenStack Platform release ([0-9]+)\\.\\d+.*\n', '\\1') }}"
+
+- name: check if repos exist
+  stat:
+    path: /etc/yum.repos.d/rhos-release-{{rhosp_major}}.repo
+  register: rhos_release_repo
+
+- name: get puddle
+  shell: grep ^baseurl /etc/yum.repos.d/rhos-release-{{rhosp_major}}.repo | head -n 1 | awk -F'/' {'print$8'}
+  register: puddle
+  when: rhos_release_repo.stat.exists
+
+- name: set puddle
+  set_fact:
+    rhosp_puddle: "{{ puddle.stdout }}"
+  when: puddle is not skipped
+
 - name: Set container_cli (Docker)
   set_fact:
     container_cli: docker
-  when: rhosp_version is version('15.0', '<') and osp_version is version('12.0', '>=')
+  when: rhosp_version is version('15.0', '<') and rhosp_version is version('12.0', '>=')
 
 - name: Set container_cli (Podman)
   set_fact:
@@ -31,3 +50,12 @@
 - name: Set version var for stockpile collection
   set_fact:
     stockpile_rhosp_version: "{{ rhosp_version }}"
+
+- name: set major version var for stockpile collection
+  set_fact:
+    stockpile_rhosp_major: "{{ rhosp_major }}"
+
+- name: set puddle var for stockpile collection
+  set_fact:
+    stockpile_rhosp_puddle: "{{ rhosp_puddle }}"
+  when: rhosp_puddle is defined

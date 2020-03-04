@@ -5,3 +5,6 @@ local_remote_user: root
 host_remote_user: root
 stockpile_output_path: /tmp/stockpile.json
 container_cli: docker
+config_path: /var/lib/config-data/puppet-generated
+undercloud_user: stack
+overcloud_user: heat-admin

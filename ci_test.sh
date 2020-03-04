@@ -12,9 +12,13 @@ export KUBECONFIG=$kube_config
 
 # Setup hosts and vars for CI environment
 cp ci/all.yml group_vars/all.yml
+cp ci/kubernetes.yml group_vars/kubernetes.yml
 
 # Get the list of tags from stockpile.yml (minus lines beginning with #)
 tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`
+
+# Clean /tmp/container in case anything is still in there
+rm -f /tmp/container/*
 
 for tag in $tag_list
 do

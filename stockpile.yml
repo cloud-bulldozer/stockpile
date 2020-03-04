@@ -44,7 +44,6 @@
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"
   become: false
-  no_log: true
   ignore_errors: yes
   gather_facts: false
   vars:

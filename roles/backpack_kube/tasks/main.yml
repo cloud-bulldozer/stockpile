@@ -57,7 +57,7 @@
   file:
     path: "{{ backpack_output_dir }}"
     state: directory
-    mode: "u=rw,g=rwx,o=rwx"
+    mode: "u=rwx,g=rwx,o=rwx"
 
 - name: Get pod list
   k8s_facts:

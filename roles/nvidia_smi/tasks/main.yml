@@ -1,0 +1,21 @@
+---
+
+- name: check for nvidia_smi
+  stat:
+    path: /usr/bin/nvidia-smi
+  register: nvidia_smi_path
+  ignore_errors: yes
+
+
+- block:
+  - name: capture nvidia_smi info
+    command: nvidia-smi -q -x
+    register: nvidia_smi_info
+
+  - name: set the collected nvidia_smi info as facts
+    set_fact:
+      stockpile_nvidia_smi:
+        xml: "{{ nvidia_smi_info.stdout }}"
+        error: "{{ nvidia_smi_info.stderr }}"
+  when: nvidia_smi_path.stat.exists
+

@@ -1,9 +1,9 @@
 ---
 
-- name: check for nvidia_smi
+- name: check for nvidia_smi binary
   stat:
-    path: '{{ nvidia_smi_path }}nvidia-smi'
-  register: nvidia_smi_path
+    path: '{{ nvidia_smi_path }}'
+  register: nvidia_smi_binary
   ignore_errors: yes
 
 
@@ -17,5 +17,5 @@
       stockpile_nvidia_smi:
         xml: "{{ nvidia_smi_info.stdout }}"
         error: "{{ nvidia_smi_info.stderr }}"
-  when: nvidia_smi_path.stat.exists
+  when: nvidia_smi_binary.stat.exists
 

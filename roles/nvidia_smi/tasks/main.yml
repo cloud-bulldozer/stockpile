@@ -2,7 +2,7 @@
 
 - name: check for nvidia_smi
   stat:
-    path: /usr/bin/nvidia-smi
+    path: '{{ nvidia_smi_path }}nvidia-smi'
   register: nvidia_smi_path
   ignore_errors: yes
 

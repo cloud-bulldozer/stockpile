@@ -1,4 +1,4 @@
 ---
 
-nvidia_smi_path: '/usr/bin/'
+nvidia_smi_path: '/usr/bin/nvidia-smi'
 

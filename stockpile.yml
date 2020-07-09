@@ -41,6 +41,7 @@
     - { role: k8s_configmaps, become: false, tags: k8s_configmaps }
     - { role: ocp_cluster_config, become: false, tags: ocp_cluster_config }
     - { role: lspci, tags: lspci }
+    - { role: nvidia_smi, tags: nvidia_smi }
 
 - hosts: kubernetes
   remote_user: "{{ container_remote_user }}"

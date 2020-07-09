@@ -9,7 +9,7 @@
 
 - block:
   - name: capture nvidia_smi info
-    command: nvidia-smi -q -x
+    command: '{{ nvidia_smi_path }} -q -x'
     register: nvidia_smi_info
 
   - name: set the collected nvidia_smi info as facts

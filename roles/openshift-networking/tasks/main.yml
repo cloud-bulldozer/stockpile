@@ -5,11 +5,6 @@
   register: oc_installed
   ignore_errors: yes
 
-- name: Check if kubeconfig exists
-  stat:
-    path: "{{ ansible_env.HOME }}/.kube/config"
-  register: kubeconfig
-
 - block:
   - name: Get ocp network operator
     command: oc get networks.operator.openshift.io cluster -o json
@@ -26,16 +21,13 @@
   - name: Set network operator
     set_fact:
       stockpile_ocp_network_operator: "{{ ocp_network_operator.stdout }}"
-    when: ocp_network_operator.rc == 0
 
   - name: Set dns config
     set_fact:
       stockpile_ocp_dns: "{{ ocp_dns.stdout }}"
-    when: ocp_dns.rc == 0
 
   - name: Set network attachment deffinitions
     set_fact:
       stockpile_ocp_net_attachments: "{{ ocp_net_attachments.stdout | from_json | json_query('items') }}"
-    when: ocp_net_attachments.rc == 0
 
-  when: ( oc_installed.rc == 0 and kubeconfig.stat.exists )
+  when: oc_installed.rc == 0

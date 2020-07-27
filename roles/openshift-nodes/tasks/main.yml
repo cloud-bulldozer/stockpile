@@ -1,96 +1,24 @@
 ---
-- name: check if the docker is installed
-  command: which docker
-  register: docker_installed
-  ignore_errors: yes
-
-- block:
-   - name: ensure that docker is running
-     service:
-       name: docker
-       state: started
-
-   - name: docker status
-     command: systemctl status docker
-     register: docker_status
-
-   - debug:
-       msg: "{{ docker_status.stdout }}"
-     when: docker_status.rc != 0
-  when: docker_installed.rc == 0
-
-- block:
-    - name: get the docker version
-      shell: docker --version | cut -d "," -f1 | cut -d ' ' -f3
-      register: docker_version_installed
-
-    - name: get the docker storage driver info
-      shell: docker info | grep -w "Storage Driver" | cut -d ':' -f2
-      register: docker_storage_driver_info
-  when: ( docker_installed.rc == 0 and docker_status.rc == 0 )
-
 - name: check if oc client is installed
   command: which oc
   register: oc_installed
   ignore_errors: yes
 
-- name: check if kubeconfig exists
-  stat:
-    path: "{{ ansible_env.HOME }}/.kube/config"
-  register: kubeconfig
-
-- name: print debug message if oc client or kubeconfig doesn't exist
+- name: print debug message if oc client doesn't exist
   debug:
-    msg: Skipping the ocp collection, cannot find kubeconfig at "{{ ansible_env.HOME }}/.kube/config" or oc client is not installed, please check.
-  when: ( oc_installed.rc != 0 or not kubeconfig.stat.exists )
+    msg: Skipping the ocp collection, oc client is not installed, please check.
+  when: oc_installed.rc != 0
 
 - block:
-    - name: determine virtualization technology
-      command: dmidecode -s system-product-name
-      register: virtualization_info
-
-    - name: get atomic openshift tests rpm version
-      shell: rpm -q --qf "%{VERSION}" atomic-openshift-tests
-      register: ocp_tests_version
-
-    - name: get atomic openshift pod version
-      shell: rpm -q --qf "%{VERSION}" atomic-openshift-pod
-      register: ocp_pod_version
-
-    - name: get atomic openshift node version
-      shell: rpm -q --qf "%{VERSION}" atomic-openshift-node
-      register: ocp_node_version
-
-    - name: get atomic openshift docker registry version
-      shell: rpm -q --qf "%{VERSION}" atomic-openshift-dockerregistry
-      register: ocp_dockerregistry_version
-
-    - name: get tuned profiles version
-      shell: rpm -q --qf "%{VERSION}" tuned-profiles-atomic
-      register: tuned_profiles_atomic
-
-    - name: kernel version
-      command: uname -r
-      register: kernel_info
 
     - name: get node info
-      shell: oc get node $(hostname) -o json
+      shell: oc get node ${my_node_name} -o json
       register: ocp_node_info
 
     - name: set collected info as facts
       set_fact:
         stockpile_openshift_node:
-          virtualization: "{{ virtualization_info.stdout }}"
-          docker_version: "{{ docker_version_installed.stdout }}"
-          docker_storage_driver: "{{ docker_storage_driver_info.stdout }}"
-          tests_version: "{{ ocp_tests_version.stdout }}"
-          pod_version: "{{ ocp_pod_version.stdout }}"
-          node_version: "{{ ocp_node_version.stdout }}"
-          dockerregistry_version: "{{ ocp_dockerregistry_version.stdout }}"
-          tuned_profiles_version: "{{ tuned_profiles_atomic.stdout }}"
-          kernel_version: "{{ kernel_info.stdout }}"
           capacity: "{{ ocp_node_info.stdout | from_json | json_query('status.capacity') }}"
           allocatable: "{{ ocp_node_info.stdout | from_json | json_query('status.allocatable') }}"
           node_info: "{{ ocp_node_info.stdout | from_json | json_query('status.nodeInfo') }}"
-          daemon_endpoints: "{{ ocp_node_info.stdout | from_json | json_query('status.daemonEndpoints') }}"
-  when: ( oc_installed.rc == 0 or kubeconfig.stat.exists )
+  when: oc_installed.rc == 0

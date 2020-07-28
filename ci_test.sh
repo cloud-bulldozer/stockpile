@@ -15,7 +15,7 @@ cp ci/all.yml group_vars/all.yml
 cp ci/kubernetes.yml group_vars/kubernetes.yml
 
 # Get the list of tags from stockpile.yml (minus lines beginning with #)
-tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $(NF-1)}'`
+tag_list=`grep tags stockpile.yml | grep -v '^ *#'| awk '{print $(NF-1)}' | tr "]" " "`
 
 # Clean /tmp/container in case anything is still in there
 rm -f /tmp/container/*

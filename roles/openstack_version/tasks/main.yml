@@ -20,7 +20,7 @@
 
 - name: set rhosp major version
   set_fact:
-    rhosp_major: "{{ version | regex_replace('^Red Hat OpenStack Platform release ([0-9]+)\\.\\d+.*\n', '\\1') }}"
+    rhosp_major: "{{ rhosp_version | regex_replace('([0-9]+\\.[0-9]+).*', '\\1') }}"
 
 - name: check if repos exist
   stat:

@@ -24,6 +24,7 @@
     - { role: k8s_pods, tags: [k8s, k8s_pods] }
     - { role: k8s_configmaps, tags: [k8s, k8s_configmaps] }
     - { role: k8s_namespaces, tags: [k8s, k8s_namespaces] }
+    - { role: k8s_cluster_info, tags: [k8s, k8s_cluster_info] }
     - { role: ceph, tags: ceph }
     - { role: nvidia_smi, tags: nvidia_smi }
     - { role: openstack_common, tags: [openstack, openstack_common] }

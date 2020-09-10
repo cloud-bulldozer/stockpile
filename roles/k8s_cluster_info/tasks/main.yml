@@ -1,0 +1,60 @@
+---
+  - name: check cluster status
+    command: kubectl cluster-info
+    register: cluster_status
+    ignore_errors: true
+
+  - block:
+
+    - name: Get node info
+      k8s_info:
+        kind: Infrastructure
+      register: infra_info
+
+    - name: Get kubectl version
+      command: kubectl version -o json
+      register: kubectl_version
+
+    - name: get oc version
+      command: oc version -o json
+      register: oc_version
+      ignore_errors: true
+
+    - k8s_info:
+        kind: ClusterVersion
+      register: cluster_version
+
+    - set_fact:
+        tempkube: '{{ kubectl_version.stdouta | from_json }}'
+        ignore_errors: true
+
+    - set_fact:
+        tempoc: '{{ oc_version.stdout | from_json }}'
+        ignore_errors: true
+
+    - name: Set node info as facts
+      set_fact:
+        stockpile_k8s_cluster_info:
+          cluster_name: "{{ infra_info.resources[0].status.infrastructureName | default('') }}"
+          platform: "{{ infra_info.resources[0].status.platform | default('') }}"
+          cluster_version: "{{ cluster_version.resources[0].status.history[0].version | default('') }}"
+          kubectl_serverVersion_buildDate: "{{ tempkube.serverVersion.buildDate | default('') }}"
+          kubectl_serverVersion_compiler: "{{ tempkube.serverVersion.compiler | default('') }}"
+          kubectl_serverVersion_gitCommit: "{{ tempkube.serverVersion.gitCommit | default('') }}"
+          kubectl_serverVersion_gitTreeState: "{{ tempkube.serverVersion.gitTreeState | default('') }}"
+          kubectl_serverVersion_gitVersion: "{{ tempkube.serverVersion.gitVersion | default('') }}"
+          kubectl_serverVersion_goVersion: "{{ tempkube.serverVersion.goVersion | default('') }}"
+          kubectl_serverVersion_major: "{{ tempkube.serverVersion.major | default('') }}"
+          kubectl_serverVersion_minor: "{{ tempkube.serverVersion.minor | default('') }}"
+          kubectl_serverVersion_platform: "{{ tempkube.serverVersion.platform | default('') }}"
+          oc_serverVersion_buildDate: "{{ tempoc.serverVersion.buildDate | default('') }}"
+          oc_serverVersion_compiler: "{{ tempoc.serverVersion.compiler | default('') }}"
+          oc_serverVersion_gitCommit: "{{ tempoc.serverVersion.gitCommit | default('') }}"
+          oc_serverVersion_gitTreeState: "{{ tempoc.serverVersion.gitTreeState | default('') }}"
+          oc_serverVersion_gitVersion: "{{ tempoc.serverVersion.gitVersion | default('') }}"
+          oc_serverVersion_goVersion: "{{ tempoc.serverVersion.goVersion | default('') }}"
+          oc_serverVersion_major: "{{ tempoc.serverVersion.major | default('') }}"
+          oc_serverVersion_minor: "{{ tempoc.serverVersion.minor | default('') }}"
+          oc_serverVersion_platform: "{{ tempoc.serverVersion.platform | default('') }}"
+
+    when: cluster_status is succeeded

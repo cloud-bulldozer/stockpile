@@ -25,7 +25,7 @@
       register: cluster_version
 
     - set_fact:
-        tempkube: '{{ kubectl_version.stdouta | from_json }}'
+        tempkube: '{{ kubectl_version.stdout | from_json }}'
         ignore_errors: true
 
     - set_fact:

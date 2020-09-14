@@ -22,6 +22,10 @@
   set_fact:
     rhosp_major: "{{ rhosp_version | regex_replace('([0-9]+\\.[0-9]+).*', '\\1') }}"
 
+- name: remove trailing .0 from the major version
+  set_fact:
+    rhosp_major: "{{ rhosp_major | regex_replace('([0-9]+)\\.[0]', '\\1') }}"
+
 - name: check if repos exist
   stat:
     path: /etc/yum.repos.d/rhos-release-{{rhosp_major}}.repo

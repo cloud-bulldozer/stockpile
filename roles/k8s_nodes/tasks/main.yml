@@ -7,7 +7,7 @@
   - block:
     
     - name: Get node info
-      k8s_facts:
+      k8s_info:
         kind: Node
       register: node_list
 

@@ -10,26 +10,6 @@
   when: oc_installed.rc != 0
 
 - block:
-    - name: get pods in all namespaces
-      command: oc get pods --all-namespaces | grep -c Running
-      register: ocp_running_pods
-
-    - name: get openshift worker node count
-      shell:  oc get nodes -l node-role.kubernetes.io/worker= | grep -c Ready
-      register: ocp_worker_count
-
-    - name: openshift masters and etcd count assuming that masters are etcd are co-located
-      shell: oc get nodes -l node-role.kubernetes.io/master= | grep -c Ready
-      register: ocp_master_count
-
-    - name: oc version
-      shell: oc version -o json
-      register: oc_version
-
-    - name: openshift user
-      command: oc whoami
-      register: ocp_user
-
     - name: services
       command: oc get svc --all-namespaces -o json
       register: ocp_svc
@@ -54,23 +34,13 @@
       command: oc get pvc --all-namespaces -o json
       register: ocp_pvc
 
-    - name: Get clusterversion
-      command: oc get clusterversion version -o json
-      register: ocp_cluster_version
-
     - name: Get clusteroperators
-      command: oc get clusterversion co -o json
+      command: oc get co -o json
       register: ocp_cluster_operators
 
     - name: set the collected info as facts
       set_fact:
         stockpile_openshift_cluster_topology:
-          running_pods_count: "{{ ocp_running_pods.stdout }}"
-          worker_count: "{{ ocp_worker_count.stdout }}"
-          master_count: "{{ ocp_master_count.stdout }}"
-          etcd_count: "{{ ocp_master_count.stdout }}"
-          oc_version: "{{ oc_version }}"
-          user: "{{ ocp_user.stdout }}"
           services: "{{ ocp_svc.stdout }}"
           service_accounts: "{{ ocp_sa.stdout }}"
           security_context_constraints: "{{ ocp_scc.stdout }}"

@@ -7,7 +7,7 @@
   - block:
     
     - name: Get info
-      k8s_facts:
+      k8s_info:
         kind: ConfigMap
       register: item_list
 

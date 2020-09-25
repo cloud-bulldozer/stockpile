@@ -7,7 +7,7 @@
   - block:
     
     - name: Get info
-      k8s_info:
+      community.kubernetes.k8s_info:
         kind: ConfigMap
       register: item_list
 

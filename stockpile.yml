@@ -7,22 +7,17 @@
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
   roles:
     - { role: cpu, tags: [common, cpu] }
-    - { role: sysctl, tags: [common, sysctl] }
     - { role: memory, tags: [common, memory] }
+    - { role: sysctl, tags: [common, sysctl] }
     - { role: lspci, tags: [common, lspci] }
     - { role: cpu_vulnerabilities, tags: [common, cpu_vulnerabilities] }
-    - { role: kernel-debug, tags: [common, kernel-debug] }
+    - { role: kernel-debug, tags: [common, kernel-debug] } 
     - { role: dmidecode, tags: [common, dmidecode] }
     - { role: yum_repos, tags: [yum, yum_repos] }
     - { role: yum_packages, tags: [yum, yum_packages] }
-    - { role: openshift-cluster-topology, tags: [openshift, openshift-cluster-topology] }
-    - { role: openshift-networking, tags: [openshift, openshift-networking] }
-    - { role: ocp_cluster_config, tags: [openshift, ocp_cluster_config] }
-    - { role: k8s_nodes, tags: [k8s, k8s_nodes] }
-    - { role: k8s_pods, tags: [k8s, k8s_pods] }
-    - { role: k8s_configmaps, tags: [k8s, k8s_configmaps] }
-    - { role: k8s_namespaces, tags: [k8s, k8s_namespaces] }
+    - { role: ocp_cluster_config, tags: openshift }
     - { role: k8s_cluster_info, tags: [k8s, k8s_cluster_info] }
+    - { role: k8s_nodes, tags: [k8s, k8s_nodes] }
     - { role: ceph, tags: ceph }
     - { role: nvidia_smi, tags: nvidia_smi }
     - { role: openstack_common, tags: [openstack, openstack_common] }

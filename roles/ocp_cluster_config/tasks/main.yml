@@ -1,19 +1,64 @@
 ---
-  - name: check node
-    command: kubectl cluster-info
-    register: cluster_status
-    ignore_errors: true
 
-  - block:
-    - name: Get install config info
-      k8s_info:
-        kind: ConfigMap
-        namespace: kube-system
-        name: cluster-config-v1
-      register: configmap_install
+- name: check cluster status
+  command: kubectl cluster-info
+  register: cluster_status
 
-    - name: Set info as facts
-      set_fact:
-        stockpile_ocp_install_config: "{{ configmap_install.resources[0].data['install-config'] | from_yaml }}"
+- block:
 
-    when: cluster_status is succeeded
+  - name: Get install config info
+    community.kubernetes.k8s_info:
+      kind: ConfigMap
+      namespace: kube-system
+      name: cluster-config-v1
+    register: configmap_install
+
+  - name: Get kube-apiserver info
+    community.kubernetes.k8s_info:
+      kind: KubeAPIServer
+      name: cluster
+    register: kube_apiserver
+
+  - name: Get kube-controller-manager info
+    community.kubernetes.k8s_info:
+      kind: KubeControllerManager
+      name: cluster
+    register: kube_controllermanager
+
+  - name: Get ingress controller info
+    community.kubernetes.k8s_info:
+      kind: IngressController
+      name: default
+      namespace: openshift-ingress-operator
+    register: default_ingress_controller
+
+  - name: Get ocp network operator
+    community.kubernetes.k8s_info:
+      kind: Network
+      api_version: operator.openshift.io/v1
+      name: cluster
+    register: ocp_network_operator
+
+  - name: Get ocp dns config
+    community.kubernetes.k8s_info:
+      kind: DNS
+      api_version: operator.openshift.io/v1
+      name: default
+    register: ocp_dns
+
+  - name: Get network attachment definitions
+    community.kubernetes.k8s_info:
+      kind: NetworkAttachmentDefinition
+    register: ocp_net_attachments
+
+  - name: Set openshift facts
+    set_fact:
+      stockpile_ocp_network_operator: "{{ ocp_network_operator.resources[0]|default() }}"
+      stockpile_ocp_dns: "{{ ocp_dns.resources[0]|default() }}"
+      stockpile_ocp_net_attachments: "{{ ocp_net_attachments.resources|default() }}"
+      stockpile_ocp_kube_apiserver: "{{ kube_apiserver.resources[0]|default() }}"
+      stockpile_ocp_kube_controllermanager: "{{ kube_controllermanager.resources[0]|default() }}"
+      stockpile_ocp_default_ingress_controller: "{{ default_ingress_controller.resources[0]|default() }}"
+      stockpile_ocp_install_config: "{{ configmap_install.resources[0].data['install-config']|from_yaml }}"
+
+  when: cluster_status is succeeded

@@ -1,17 +1,10 @@
 ---
 
-- name: check for lscpu
-  command: which lscpu
-  register: lscpu_installed
-  ignore_errors: yes
-
 - name: capture lscpu
   command: lscpu
   register: lscpu_info
-  when: lscpu_installed.rc == 0
 
 - name: set the collected cpu info as facts
   set_fact:
-    stockpile_cpuinfo:
-      lscpu: "{{ lscpu_info.stdout }}"
-  when: lscpu_installed.rc == 0
+    stockpile_cpuinfo: "{{ lscpu_info.stdout }}"
+  when: lscpu_info.rc == 0

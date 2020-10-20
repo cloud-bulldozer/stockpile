@@ -7,5 +7,5 @@
 
 - name: set the collected cpu vulnerabilities info as facts
   set_fact:
-    stockpile_cpu_vulnerabilities: "{{ vulnerabilities_output.stdout_lines }}"
+    stockpile_cpu_vulnerabilities: "{{ vulnerabilities_output.stdout }}"
   when: vulnerabilities_output.stdout_lines is defined

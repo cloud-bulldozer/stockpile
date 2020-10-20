@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "{{ metadata_sa }}"
-  namespace: "{{ operator_namespace }}"
-  annotations:
-    kubernetes.io/service-account.name: "{{ metadata_sa }}"
-type: kubernetes.io/service-account-token

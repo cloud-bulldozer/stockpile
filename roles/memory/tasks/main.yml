@@ -1,10 +1,12 @@
 ---
 
-- stat:
+- name: Check /proc/meminfo
+  stat:
     path: /proc/meminfo
   register: meminfo
 
 - block:
+
   - name: capture meminfo
     slurp:
       src: /proc/meminfo
@@ -12,6 +14,6 @@
 
   - name: Set collected meminfo as facts
     set_fact:
-      stockpile_meminfo:
-        meminfo: "{{ meminfo_b64.content | b64decode }}"
+      stockpile_meminfo: "{{ meminfo_b64.content | b64decode }}"
+
   when: meminfo.stat.exists

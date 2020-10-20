@@ -1,18 +1,14 @@
 ---
-  - name: check node
-    command: kubectl cluster-info
-    register: cluster_status
-    ignore_errors: true
 
-  - block:
-    
-    - name: Get node info
-      k8s_facts:
-        kind: Node
-      register: node_list
+- name: Get node info
+  community.kubernetes.k8s_info:
+    kind: Node
+  register: node_info
 
-    - name: Set node info as facts
-      set_fact:
-        stockpile_k8s_nodes: "{{ node_list.resources }}"
+- block:
 
-    when: cluster_status is succeeded
+  - name: Set node info as facts
+    set_fact:
+      stockpile_k8s_nodes: "{{ node_info.resources }}"
+
+  when: node_info.resources

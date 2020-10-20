@@ -7,12 +7,12 @@
 - block:
 
     - name: capture lspci -mmvk
-      shell: lspci -mmvk
+      command: lspci -mmvk
       register: lspci_devices
 
     - name: set facts for lspci
       set_fact:
-          stockpile_lspci: "{{ lspci_devices.stdout }}"
+        stockpile_lspci: "{{ lspci_devices.stdout }}"
 
   when: lspci_installed.rc == 0
 

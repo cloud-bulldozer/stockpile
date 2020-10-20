@@ -7,7 +7,7 @@
   - block:
     
     - name: Get pod info
-      k8s_facts:
+      community.kubernetes.k8s_info:
         kind: Pod
       register: pod_list
 

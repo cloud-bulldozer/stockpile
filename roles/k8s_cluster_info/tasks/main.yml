@@ -22,6 +22,11 @@
   - community.kubernetes.k8s_info:
       kind: ClusterVersion
     register: cluster_version
+  
+
+  - community.kubernetes.k8s_info:
+      kind: Network
+    register: cluster_network_type
 
   - set_fact:
       tempkube: '{{ kubectl_version.stdout | from_json }}'
@@ -33,6 +38,7 @@
         cluster_name: "{{ infra_info.resources[0].status.infrastructureName | default('') }}"
         platform: "{{ infra_info.resources[0].status.platform | default('') }}"
         cluster_version: "{{ cluster_version.resources[0].status.history[0].version | default('') }}"
+        cluster_network_type: "{{ cluster_network_type.resources[0].status.networkType | default('') }}"
         kubectl_serverVersion_buildDate: "{{ tempkube.serverVersion.buildDate | default('') }}"
         kubectl_serverVersion_compiler: "{{ tempkube.serverVersion.compiler | default('') }}"
         kubectl_serverVersion_gitCommit: "{{ tempkube.serverVersion.gitCommit | default('') }}"

@@ -23,7 +23,6 @@
       kind: ClusterVersion
     register: cluster_version
   
-
   - community.kubernetes.k8s_info:
       kind: Network
     register: cluster_network_type

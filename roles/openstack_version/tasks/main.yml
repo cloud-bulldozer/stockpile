@@ -21,10 +21,7 @@
 - name: set rhosp major version
   set_fact:
     rhosp_major: "{{ rhosp_version | regex_replace('([0-9]+\\.[0-9]+).*', '\\1') }}"
-
-- name: remove trailing .0 from the major version
-  set_fact:
-    rhosp_major: "{{ rhosp_major | regex_replace('([0-9]+)\\.[0]', '\\1') }}"
+  when: rhosp_version is version('16.0', '<=')
 
 - name: check if repos exist
   stat:

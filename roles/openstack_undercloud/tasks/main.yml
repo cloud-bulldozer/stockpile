@@ -48,15 +48,27 @@
 
 
 # ansible_env.HOME should've worked here
-- name: Get Controller Nodes number
-  shell: source {{ user_homedir.stdout }}/stackrc; nova list | grep controller | grep ACTIVE | wc -l
-  register: controller_count
-  when: undercloud_conf.stat.exists
+- name: get overcloud node count before OSP-17
+  block:
+    - name: Get Controller Nodes number
+      shell: source {{ user_homedir.stdout }}/stackrc; nova list | grep controller | grep ACTIVE | wc -l
+      register: controller_count
 
-- name: Get Compute Nodes number
-  shell: source {{ user_homedir.stdout }}/stackrc; nova list | grep compute | grep ACTIVE | wc -l
-  register: compute_count
-  when: undercloud_conf.stat.exists
+    - name: Get Compute Nodes number
+      shell: source {{ user_homedir.stdout }}/stackrc; nova list | grep compute | grep ACTIVE | wc -l
+      register: compute_count
+  when: rhosp_major is version('17', '<') and undercloud_conf.stat.exists
+
+- name: get overcloud node count on or after OSP-17
+  block:
+    - name: Get Controller Nodes number
+      shell: source {{ user_homedir.stdout }}/stackrc; metalsmith list | grep controller | grep ACTIVE | wc -l
+      register: controller_count
+
+    - name: Get Compute Nodes number
+      shell: source {{ user_homedir.stdout }}/stackrc; metalsmith list | grep compute | grep ACTIVE | wc -l
+      register: compute_count
+  when: rhosp_major is version('17', '>=') and undercloud_conf.stat.exists
 
 - name: setting fact
   set_fact:
